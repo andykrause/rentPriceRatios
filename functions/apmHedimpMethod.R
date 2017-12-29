@@ -218,7 +218,7 @@ hedImpGeoWrap <- function(geo.field,
   
   ## Return values
   
-  all.imp <- rbind.fill(lapply(ind.list, hedImpGetResults))
+  all.imp <- plyr::rbind.fill(lapply(ind.list, hedImpGetResults))
   all.imp$geo.level <- geo.field
   
   return(all.imp)

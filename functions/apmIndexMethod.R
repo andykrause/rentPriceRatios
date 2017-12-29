@@ -395,7 +395,7 @@ indexTidyerGeoWrap <- function(x.data,
   
  ## Conver to a data.frame  
   
-  ind.df <- rbind.fill(ind.list[ind.class])
+  ind.df <- plyr::rbind.fill(ind.list[ind.class])
   ind.df$geo.level <- geo.level
   
  ## Return Values  
@@ -432,7 +432,7 @@ indexLevelWrap <- function(x.data,
   names(results.list) <- geo.levels
   
   # convert to data.frame if necessary
-  if(wrap.function == 'indexTidyerGeoWrap') results.list <- rbind.fill(results.list)
+  if(wrap.function == 'indexTidyerGeoWrap') results.list <- plyr::rbind.fill(results.list)
   
   return(results.list)
   

@@ -127,7 +127,7 @@ srmTimeAdjGeoWrap <- function(trans.data,
   
   ## Convert to data frame
   
-  match.data <- rbind.fill(match.list)
+  match.data <- plyr::rbind.fill(match.list)
   
   ## Return values  
   

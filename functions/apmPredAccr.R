@@ -56,7 +56,7 @@ apmErrorEngine <- function(srm.data,
   
   # Merge data together  
   if(nrow(r.data) != 0 | nrow(s.data) != 0) {
-    x.data <- rbind.fill(res.list)
+    x.data <- plyr::rbind.fill(res.list)
   } else {
     x.data <- 'NA'
   }
@@ -108,7 +108,7 @@ apmErrorByMethod <- function(geo,
   srm.error$method='srm'
   
   ##
-  all.error <- rbind.fill(list(spag.error, index.error, hedimp.error, srm.error))
+  all.error <- plyr::rbind.fill(list(spag.error, index.error, hedimp.error, srm.error))
   
  ## Return values
   
@@ -157,7 +157,7 @@ apmPredGeoWrap <- function(srm.data,
   if(length(cutX) > 0) geo.house <- geo.house[-cutX]
   
   # Turn to a data.frame and give label
-  geo.house <- rbind.fill(geo.house)
+  geo.house <- plyr::rbind.fill(geo.house)
   geo.house$type <- 'house'
   
  ## Calculate errors on units  
@@ -173,12 +173,12 @@ apmPredGeoWrap <- function(srm.data,
   if(length(cutX) > 0) geo.unit <- geo.unit[-cutX]
   
   # Turn to a data.frame and give label
-  geo.unit <- rbind.fill(geo.unit)
+  geo.unit <- plyr::rbind.fill(geo.unit)
   geo.unit$type <- 'unit'
   
  ## Bind both houses and units together  
   
-  all.geo <- rbind.fill(list(geo.house, geo.unit))
+  all.geo <- plyr::rbind.fill(list(geo.house, geo.unit))
   all.geo$geo.level <- geo.level
   
  ## Return values  
@@ -215,7 +215,7 @@ apmPredLevelWrap <- function(srm.data,
   
  ## If convert to DF
   
-  if(toDF) level.res <- rbind.fill(level.res)
+  if(toDF) level.res <- plyr::rbind.fill(level.res)
   
  ## Return Values
   

@@ -119,7 +119,7 @@ convertAPMData <- function(basePath,            # The main directory where the d
   
   # Merge into a single file
   if(verbose) cat('Merging to a single file \n')
-  csvData <- rbind.fill(csvData)
+  csvData <- plyr::rbind.fill(csvData)
   
   # Write out the file
   if(is.null(folderName)) folderName <- transType[1]

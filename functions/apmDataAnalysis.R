@@ -51,7 +51,7 @@ apmGenTidyerGeoWrap <- function(yield.results,
   
    tidy.list <- lapply(as.list(geo.levels), FUN = apmGenTidyer,
                        yield.results=yield.results)
-   tidy.df <- rbind.fill(tidy.list)
+   tidy.df <- plyr::rbind.fill(tidy.list)
   
  ## Add method type
    
@@ -433,8 +433,8 @@ calcDifGeoWrap <- function(x.data,
   
   getHouse <- function(x) x$houses
   getUnit <- function(x) x$units
-  geo.houses <- rbind.fill(lapply(geo.data, getHouse))
-  geo.units <- rbind.fill(lapply(geo.data, getUnit))
+  geo.houses <- plyr::rbind.fill(lapply(geo.data, getHouse))
+  geo.units <- plyr::rbind.fill(lapply(geo.data, getUnit))
 
  ## Return Values  
     
