@@ -168,569 +168,150 @@ To examine rent-price ratios estimates from the three methods discussed above we
 
 In the direct matching method we identify properties that have both sold and rented during our study period. Due to these constraints, the direct match method uses a more limited set of data (120,000 vs. 710,000) than the index and hedonic imputation methods (see Table \ref{table:data}).  This relatively large number of matched properties is due to the fact that in the Australian residential markets there are very few institutionally-owned apartment building (as in North America) and, instead, most apartment (and condominium) properties are privately owned and, if not owner-occupied, rented out on the market.\par
 
-<!-- \begin{table}[ht] -->
-<!-- \centering -->
-<!-- \caption {Data Overview} -->
-<!-- \footnotesize -->
-<!-- \label{table:data} -->
-<!-- \begin{tabular}{lrrr} -->
-<!--   \hline -->
-<!--   \hline -->
-<!--   \textbf{Data Type} & \textbf{Houses} & \textbf{Apartments} & \textbf{Total} \\ -->
-<!--    \hline -->
-<!--    & & & \\ -->
-<!--    \textbf{\textit{Transaction Data}} & & & \\ -->
-<!--    \hline -->
-<!--   Sales & 191,908 & 44,806 & 236,714\\ -->
-<!--   \hline -->
-<!--   Rentals & 253,447 & 222,958 & 476,405\\ -->
-<!--   \hline -->
-<!--   All & 445,355 & 267,764 & 713,119 \\ -->
-<!--   \hline -->
-<!--   \hline -->
-<!--   & & & \\ -->
-<!--   \textbf{\textit{Matched Observations}}  & & & \\ -->
-<!--   \hline -->
-<!--   All & 81,804 & 38,597 & 120,401 \\ -->
-<!--   \hline -->
-<!--   \hline -->
-<!--   \end{tabular} -->
-<!--  \end{table} -->
+\begin{table}[ht]
+\centering
+\caption {Data Overview}
+\footnotesize
+\label{table:data}
+\begin{tabular}{lrrr}
+  \hline
+  \hline
+  \textbf{Data Type} & \textbf{Houses} & \textbf{Apartments} & \textbf{Total} \\
+   \hline
+   & & & \\
+   \textbf{\textit{Transaction Data}} & & & \\
+   \hline
+  Sales & 191,908 & 44,806 & 236,714\\
+  \hline
+  Rentals & 253,447 & 222,958 & 476,405\\
+  \hline
+  All & 445,355 & 267,764 & 713,119 \\
+  \hline
+  \hline
+  & & & \\
+  \textbf{\textit{Matched Observations}}  & & & \\
+  \hline
+  All & 81,804 & 38,597 & 120,401 \\
+  \hline
+  \hline
+  \end{tabular}
+ \end{table}
 
-<!-- For apartments, there are more than five times as many rental observations as sales, whereas within the house market the count of sales and rentals are relatively equal.  This elevated ratio of rental to sales within the apartment market speaks to the much shorter tenure period that is common within apartment rentals compared to house rentals.  The difference in the total number of sales between houses and apartments is due to the general urban development patterns across Melbourne.  Like most Australian, US and Canadian cities, Melbourne has seen considerable growth in the post WWII period, much of which has been in the form of low-density, peripheral development. As a result, single-family houses remain the dominant residential dwelling option through most of the region.  Only much more recently has the CBD and adjacent areas experienced a rapid increase of high density apartments.\par -->
+For apartments, there are more than five times as many rental observations as sales, whereas within the house market the count of sales and rentals are relatively equal.  This elevated ratio of rental to sales within the apartment market speaks to the much shorter tenure period that is common within apartment rentals compared to house rentals.  The difference in the total number of sales between houses and apartments is due to the general urban development patterns across Melbourne.  Like most Australian, US and Canadian cities, Melbourne has seen considerable growth in the post WWII period, much of which has been in the form of low-density, peripheral development. As a result, single-family houses remain the dominant residential dwelling option through most of the region.  Only much more recently has the CBD and adjacent areas experienced a rapid increase of high density apartments.
 
-<!-- Figure 1 shows the location of the observations, split by property and tenure type.  Darker areas show higher concentrations of observations.  Apartments are clustered in the inner areas of the metropolitan region.  Additionally, rental apartments are more concentrated in CBD and immediate surrounds than sold apartments.  For houses, there are small areas immediately east and south of the CBD that show a higher concentration of rental homes versus sold homes.\par -->
-<!-- % -->
-<!-- <<prep_map, results='hide', echo=FALSE, warning=FALSE, cache=TRUE, comment=FALSE, message=FALSE>>= -->
+Figure 1 shows the location of the observations, split by property and tenure type.  Darker areas show higher concentrations of observations.  Apartments are clustered in the inner areas of the metropolitan region.  Additionally, rental apartments are more concentrated in CBD and immediate surrounds than sold apartments.  For houses, there are small areas immediately east and south of the CBD that show a higher concentration of rental homes versus sold homes.
 
-<!--     b <- 111 -->
 
-<!--     studyLGAs <- studyShapes$lga -->
-<!--     studyLGAs@data$ID <- rownames(studyLGAs@data) -->
-<!--     lgasGG <-  fortify(studyLGAs, region="ID") -->
+![](figures/melbmap.jpg)
 
-<!--     studySubs <- studyShapes$suburb -->
-<!--     studySubs@data$ID <- rownames(studySubs@data) -->
-<!--     subsGG <-  fortify(studySubs, region="ID") -->
+\section*{Comparison of Rent-Price Ratios}
 
-<!--     map.data <- full$impute.data[,c('Property_Longitude', 'Property_Latitude', -->
-<!--                                        'PropertyType', 'transType')] -->
-<!--     map.data$transType <- as.character(map.data$transType) -->
-<!--     map.data$PropertyType <- as.character(map.data$PropertyType) -->
+In this section we compare estimates of rent-price ratios derived with the three methods discussed above. Ratios are estimated quarterly using the model specifications described below.  Initial exploratory analysis showed considerable differences between the apartment and house markets\footnote{Properties labeled as townhomes, villas, or terraces are treated as houses, while studios are treated as units.  These use types represent approximately 8.5\% of the cleaned observations} in Melbourne and, as a results, all of the analyses that follow treat these two sub-markets separately.\par
 
-<!--     map.data$transType[map.data$transType == 'rent'] <- "Rentals" -->
-<!--     map.data$transType[map.data$transType == 'sale'] <- "Sales" -->
+\subsection*{Model Specifications}
 
-<!--     map.data$PropertyType[map.data$PropertyType == 'Unit'] <- "Apartments" -->
-<!--     map.data$PropertyType[map.data$PropertyType == 'House'] <- "Houses" -->
+Our index comparison method creates price and rent indexes using a weighted repeat sales (rental) method following the commonly used three-stage procedure described in Case and Shiller (\citeyear{Case1987}) where the first step is:
 
-<!--     loc.plot <- ggplot(data=map.data, -->
-<!--                        aes(x=Property_Longitude, y=Property_Latitude)) + -->
-<!--       geom_path(data=subsGG, aes(x=long, y=lat, group=id), color='gray80') + -->
-<!--       geom_path(data=lgasGG, aes(x=long, y=lat, group=id), color='gray50') + -->
-<!--       stat_binhex(bins=100, aes(alpha=(..count..)^(1/3), fill=PropertyType)) + -->
-<!--       scale_fill_manual(values=c('darkorange', 'navy'), guide=FALSE) + -->
+\begin{equation}
+  y_{it} - y_{is} = \beta_t D_{it} -\beta_s D_{is} + (\mu_{it} - \mu_{is})
+\end{equation}
 
-<!--       coord_cartesian(xlim=c(144.5, 145.6), -->
-<!--                       ylim=c(-38.2, -37.4)) + -->
-<!--       facet_grid(transType~PropertyType) + -->
-<!--       theme_bw() + -->
-<!--       theme(legend.position='none', -->
-<!--             axis.title.x=element_blank(), -->
-<!--             axis.text.x=element_blank(), -->
-<!--             axis.ticks.x=element_blank(), -->
-<!--             axis.title.y=element_blank(), -->
-<!--             axis.text.y=element_blank(), -->
-<!--             axis.ticks.y=element_blank(), -->
-<!--             panel.grid.major = element_blank(), -->
-<!--             panel.grid.minor = element_blank(), -->
-<!--             strip.text.x = element_text(size = 30), -->
-<!--             strip.text.y = element_text(size = 30)) -->
+where $y_{is}$ is log of the initial transaction (sale or rental) price, $y_{it}$ is the log of the repeat transaction price, $D_{is}$ is the time of the initial transaction, $D_{it}$ is the time of the repeat transaction and $\mu_{is}$ and $\mu_{it}$ are observation specific errors. This simplies to:
 
-<!-- @ -->
+\begin{equation}
+  y_{its} = \beta_1 D_{its} + \mu_{its}
+\end{equation}
 
-<!-- <<Map, echo=FALSE, results='hide', warning=FALSE, cache=TRUE, comment=FALSE,message=FALSE>>= -->
+where $y_{its}$ is the difference of logged transaction prices, $D_{its}$ is a set of dummy variable for all time periods in the data indicating the time of first transaction (-1), subsequent transaction (1) with all other period a 0 and $\mu_{its}$ is an error term. As contant quality violations may be related to the length of time between observations, the second stage models the residuals of the first as function of the time between observations:
 
-<!-- jpeg("C:/Code/Research/rentPriceRatios/papers/prmc/figure/melbMap.jpg", width = 1100, height = 900, quality=100) -->
-<!--   loc.plot -->
-<!-- dev.off() -->
-<!-- @ -->
+\begin{equation}
+  \mu_{its}^2 = \alpha + \phi_1 (D_{it} - D_{is}) + \epsilon_i
+\end{equation}
 
-<!-- \begin{figure} -->
-<!-- \centering -->
-<!-- \includegraphics[trim=0 0 0 0, clip, scale=.4]{figure/melbmap.jpg} -->
-<!-- \label{map} -->
-<!-- \caption{Location of Observations} -->
-<!-- \end{figure} -->
+where $\mu_{its}^2$ is the squared residual from the first stage, $(D_{it} - D_{is})$ is the time between the two transactions and $\epsilon_1$ is an error term. In the third stage the fitted values of the second stage are then used as weights when re-estimating the regression model specified in equation 10. The coefficients from the temporal dummy variables in equation 10 are used to create rent and price indexes via a Laspreyes method.
 
-<!-- \section*{Comparison of Rent-Price Ratios} -->
+For the hedonic imputation method, we specify the following models:
 
-<!-- In this section we compare estimates of rent-price ratios derived with the three methods discussed above. Ratios are estimated quarterly using the model specifications described below.  Initial exploratory analysis showed considerable differences between the apartment and house markets\footnote{Properties labeled as townhomes, villas, or terraces are treated as houses, while studios are treated as units.  These use types represent approximately 8.5\% of the cleaned observations} in Melbourne and, as a results, all of the analyses that follow treat these two sub-markets separately.\par -->
+ \begin{equation}
+  log(P_i or R_i) = \alpha + \beta_1 STRUC_i + \gamma_1 TIME_i + \rho_1 LOCATION_i + \epsilon_i
+ \end{equation}
 
-<!-- \subsection*{Model Specifications} -->
+where the dependent variable is either the natural log of the price (\textit{$P_i$}) or the natural log of the rental value (\textit{$R_i$}), \textit{$STRUC_i$} is a set of stuctural characteristics about the home, \textit{$TIME_i$} are quarterly time dummies and \textit{$LOCATION_i$} are location fixed effects.  For houses the list of structural characteristics include the size of the lot, number of bedrooms, number of bathrooms, presence of a garage and the presence of a pool.  Units include the same structural variables, minus the size of the lot.  Unfortunately in this dataset (and throughout most datasets in Australia) home size in square meters and the age, quality and condition of the home are not available. Finally, we use suburb location as the spatial fixed effects, \textit{LOCATION}.  Suburbs in Australia are generally much smaller than their North American counterparts.  For instance there are nearly 350 suburbs in the study area.\par
 
-<!-- Our index comparison method creates price and rent indexes using a weighted repeat sales (rental) method following the commonly used three-stage procedure described in Case and Shiller (\citeyear{Case1987}) where the first step is: -->
+In the direct matching method we identify homes that have both rented and sold.  For each pair of sale/rental we calculate two estimates of rent-price ratio, one at the time of sale and one at the time of rental.  In the case of the sale (rental), we adjust the rental (sale) value to the sale (rental) date based on the rental (sale) index developed in the index comparison method and then divide the adjusted rental value by the (adjusted) sale price. This process creates two estimates of rent-price ratio for each sale-rental pair, one at the time of each transaction.  In the case of a home that has sold once and rented multiple times (or vice versa), we form a set of rent-price ratios for each paired set of sale-rent observations.\par
 
-<!-- \begin{equation} -->
-<!--   y_{it} - y_{is} = \beta_t D_{it} -\beta_s D_{is} + (\mu_{it} - \mu_{is}) -->
-<!-- \end{equation} -->
+\subsection*{Initial Results}
 
-<!-- where $y_{is}$ is log of the initial transaction (sale or rental) price, $y_{it}$ is the log of the repeat transaction price, $D_{is}$ is the time of the initial transaction, $D_{it}$ is the time of the repeat transaction and $\mu_{is}$ and $\mu_{it}$ are observation specific errors. This simplies to: -->
+To provide context for the results to follow, we begin by looking at the overall movements in the sale prices and rents. As shown in Figure \ref{fig:srindexes}, sale prices have increased much more dramatically than rents over the five-year study period, especially for houses. All of that growth in prices has occurred from the beginning of 2013 to end of 2015 period.  Over this three-year time frame apartment prices have risen about 15\% and house prices around 35\%.  For both structure types, rent increases over the entire five-year span remained a very consistent 1\% per annum.
 
-<!-- \begin{equation} -->
-<!--   y_{its} = \beta_1 D_{its} + \mu_{its} -->
-<!-- \end{equation} -->
+![](figures/index1.jpg)
 
-<!-- where $y_{its}$ is the difference of logged transaction prices, $D_{its}$ is a set of dummy variable for all time periods in the data indicating the time of first transaction (-1), subsequent transaction (1) with all other period a 0 and $\mu_{its}$ is an error term. As contant quality violations may be related to the length of time between observations, the second stage models the residuals of the first as function of the time between observations: -->
+Next, we calculate and compare the rent-price ratio for houses and apartments over the entire Melbourne metropolitan region using the three methods described above. As Figure \ref{fig:metroplot} shows, rent-price estimates are generally higher in the apartment market than in the detached housing market. Overall, rates range from a low of 0.033 to a high of 0.049, suggesting that gross annual rents are equivalent to anywhere from 3.3\% to 4.9\% of the sales price depending on the structure type, time and method of estimation.  Controlling for method, this premium in the apartment market is around 0.4\% to 0.6\% of the sale price.\par
 
-<!-- \begin{equation} -->
-<!--   \mu_{its}^2 = \alpha + \phi_1 (D_{it} - D_{is}) + \epsilon_i -->
-<!-- \end{equation} -->
+The index comparison method estimates for both apartments (left panel) and houses (right panel) are considerably lower than the those for hedonic imputation which are in turn lower than the direct matching approach. Overall, within each structure type the three methods follow a generally similar pattern over time, that of rising rent-price ratios from 2011 to 2013 and then steeply declining from that point forward. The differences between the match and impute methods remain relatively constant over time, while in both markets the index method estimates decline more quickly than the others in 2014 and 2015.\par
 
-<!-- where $\mu_{its}^2$ is the squared residual from the first stage, $(D_{it} - D_{is})$ is the time between the two transactions and $\epsilon_1$ is an error term. In the third stage the fitted values of the second stage are then used as weights when re-estimating the regression model specified in equation 10. The coefficients from the temporal dummy variables in equation 10 are used to create rent and price indexes via a Laspreyes method. -->
+![](figures/allglob.jpg)
 
-<!-- For the hedonic imputation method, we specify the following models: -->
+The differences in the estimates provided by the three methods are substantial with a nearly 20\% gap between the index and match estimates at the end of 2015. It is clear from this analysis that the differences between the methods highlighed in Table \ref{table:summeth} are leading to deviations rent-price ratio estimates and trends. Below, we examine two factors that may be leading to these variations: 1) between tenure sample composition; and 2) geographic aggregation.\par
 
-<!--  \begin{equation} -->
-<!--   log(P_i or R_i) = \alpha + \beta_1 STRUC_i + \gamma_1 TIME_i + \rho_1 LOCATION_i + \epsilon_i -->
-<!--  \end{equation} -->
-
-<!-- where the dependent variable is either the natural log of the price (\textit{$P_i$}) or the natural log of the rental value (\textit{$R_i$}), \textit{$STRUC_i$} is a set of stuctural characteristics about the home, \textit{$TIME_i$} are quarterly time dummies and \textit{$LOCATION_i$} are location fixed effects.  For houses the list of structural characteristics include the size of the lot, number of bedrooms, number of bathrooms, presence of a garage and the presence of a pool.  Units include the same structural variables, minus the size of the lot.  Unfortunately in this dataset (and throughout most datasets in Australia) home size in square meters and the age, quality and condition of the home are not available. Finally, we use suburb location as the spatial fixed effects, \textit{LOCATION}.  Suburbs in Australia are generally much smaller than their North American counterparts.  For instance there are nearly 350 suburbs in the study area.\par -->
-
-<!-- In the direct matching method we identify homes that have both rented and sold.  For each pair of sale/rental we calculate two estimates of rent-price ratio, one at the time of sale and one at the time of rental.  In the case of the sale (rental), we adjust the rental (sale) value to the sale (rental) date based on the rental (sale) index developed in the index comparison method and then divide the adjusted rental value by the (adjusted) sale price. This process creates two estimates of rent-price ratio for each sale-rental pair, one at the time of each transaction.  In the case of a home that has sold once and rented multiple times (or vice versa), we form a set of rent-price ratios for each paired set of sale-rent observations.\par -->
-
-<!-- \subsection*{Initial Results} -->
-
-<!-- To provide context for the results to follow, we begin by looking at the overall movements in the sale prices and rents. As shown in Figure \ref{fig:srindexes}, sale prices have increased much more dramatically than rents over the five-year study period, especially for houses. All of that growth in prices has occurred from the beginning of 2013 to end of 2015 period.  Over this three-year time frame apartment prices have risen about 15\% and house prices around 35\%.  For both structure types, rent increases over the entire five-year span remained a very consistent 1\% per annum. -->
-
-<!-- <<make.index.plot,  echo=FALSE,  results='asis', warning=FALSE, cache=FALSE, comments=FALSE>>= -->
-
-<!--    # Extract the index values -->
-<!--    glob.index <- full$index.data$Global$Global -->
-
-<!--    index.df <- data.frame(type=c(rep('Houses', 40), rep('Apartments',40)), -->
-<!--                          tenure=rep(c(rep('Sales', 20), rep('Rentals', 20))), -->
-<!--                          index=c(glob.index$house.sale, glob.index$house.rent, -->
-<!--                                  glob.index$unit.sale, glob.index$unit.rent), -->
-<!--                          time=rep(1:20,4)) -->
-
-<!--   index.plot <- ggplot(index.df, -->
-<!--          aes(x=time, y=index, color=type, linetype=tenure)) + -->
-<!--          geom_line(size=1.2) + -->
-<!--          scale_colour_manual(values=c('darkorange', 'blue'), guide=FALSE)+ -->
-<!--          scale_linetype_manual(values=c(3, 1), name='Tenure Type') + -->
-<!--          scale_x_continuous(labels=c(2011:2016), -->
-<!--                             breaks=c(seq(0, 20, 4))) + -->
-<!--          xlab("") + -->
-<!--          ylab("Index Value\n") + -->
-<!--          facet_wrap(~type) + -->
-<!--          theme_bw() + -->
-<!--          theme(legend.title=element_blank(), -->
-<!--               legend.position='bottom', -->
-<!--               legend.key.width=unit(2, "cm"), -->
-<!--               legend.key=element_rect(fill='white', color='white'), -->
-<!--               strip.text.x = element_text(size = 18)) -->
-<!--  @ -->
-
-<!-- \begin{figure} -->
-<!--  \centering -->
-<!-- <<index.plot, echo=FALSE,  results='asis', warning=FALSE, cache=FALSE, comments=FALSE, message=FALSE, fig.height=3>>= -->
-<!--    index.plot -->
-<!--  @ -->
-
-<!-- \caption{Sale and Rent Indexes} -->
-<!-- \label{fig:srindexes} -->
-<!-- \end{figure} -->
-
-<!-- Next, we calculate and compare the rent-price ratio for houses and apartments over the entire Melbourne metropolitan region using the three methods described above. As Figure \ref{fig:metroplot} shows, rent-price estimates are generally higher in the apartment market than in the detached housing market. Overall, rates range from a low of 0.033 to a high of 0.049, suggesting that gross annual rents are equivalent to anywhere from 3.3\% to 4.9\% of the sales price depending on the structure type, time and method of estimation.  Controlling for method, this premium in the apartment market is around 0.4\% to 0.6\% of the sale price.\par -->
-
-<!-- The index comparison method estimates for both apartments (left panel) and houses (right panel) are considerably lower than the those for hedonic imputation which are in turn lower than the direct matching approach. Overall, within each structure type the three methods follow a generally similar pattern over time, that of rising rent-price ratios from 2011 to 2013 and then steeply declining from that point forward. The differences between the match and impute methods remain relatively constant over time, while in both markets the index method estimates decline more quickly than the others in 2014 and 2015.\par -->
-
-<!-- <<viz.colors, echo=FALSE,  results='asis', warning=FALSE, cache=FALSE, comments=FALSE>>= -->
-
-<!--    # Set colors for plots -->
-<!--    unitCols <- colorRampPalette(brewer.pal(9, 'Oranges'))(100)[c(95,50,25)] -->
-<!--    houseCols <- c('navy', 'royalblue2', 'skyblue') #, 'gray50') -->
-
-<!--    # Set sizes and line types -->
-<!--    methSizes <- c(1, 1.25, 1.5) -->
-<!--    meth.type <- c('dotted', 'longdash', 'solid') -->
-<!-- @ -->
-
-<!-- <<extract.glob.data, echo=FALSE,  results='asis', warning=FALSE, cache=FALSE, comments=FALSE>>= -->
-<!--    glob.house <- full.geo.data$Global[full.geo.data$Global$type == 'house',] -->
-<!--    glob.unit <- full.geo.data$Global[full.geo.data$Global$type == 'unit',] -->
-<!--    glob.all <- rbind(glob.house, glob.unit) -->
-<!--    glob.all$type <- as.character(glob.all$type) -->
-<!--    glob.all$type[glob.all$type=='house'] <- 'Houses' -->
-<!--    glob.all$type[glob.all$type=='unit'] <- 'Apartments' -->
-<!--    glob.all$mt <- paste0(glob.all$method, glob.all$type) -->
-<!--    glob.all$sample <- "Full Sample" -->
-
-<!-- @ -->
-
-<!-- <<metro.plot, echo=FALSE,  results='asis', warning=FALSE, cache=FALSE, comments=FALSE>>= -->
-
-<!--    all.glob <- ggplot(glob.all, -->
-<!--                         aes(x=time, y=yield, group=method, color=type))+ -->
-<!--                         geom_line(size=1.1, aes(linetype=method)) + -->
-<!--                         facet_wrap(~type) + -->
-<!--                         scale_size_manual(values=methSizes) + -->
-<!--                         scale_colour_manual(values=c('darkorange', 'blue'), guide=FALSE) + -->
-<!--                         scale_linetype_manual(values=meth.type) + -->
-<!--                         xlab("") + -->
-<!--                         ylab("Rent-Price Ratio\n") + -->
-<!--                         scale_x_continuous(breaks=seq(0, 20, 4), -->
-<!--                                            labels=2011:2016) + -->
-<!--                         scale_y_continuous(breaks=seq(.031, .049, .002), -->
-<!--                                            labels=seq(.031, .049, .002)) + -->
-<!--                         coord_cartesian(ylim=c(.03, .049))+ -->
-<!--                     theme_bw() + -->
-<!--                     theme(legend.title=element_blank(), -->
-<!--                           legend.position='bottom', -->
-<!--                           legend.key.width=unit(2, "cm"), -->
-<!--                           legend.key=element_rect(fill='white', color='white'), -->
-<!--                           strip.text.x = element_text(size = 15)) -->
-
-<!-- @ -->
-
-<!-- \begin{figure} -->
-<!--  \centering -->
-
-<!--  <<metro.plot2, echo=FALSE,  results='asis', warning=FALSE, cache=FALSE, comments=FALSE, fig.height=4>>= -->
-<!--    all.glob -->
-<!-- @ -->
-
-<!-- \caption{Method Comparison: All Metro Area} -->
-<!-- \label{fig:metroplot} -->
-<!-- \end{figure} -->
-
-<!-- The differences in the estimates provided by the three methods are substantial with a nearly 20\% gap between the index and match estimates at the end of 2015. It is clear from this analysis that the differences between the methods highlighed in Table \ref{table:summeth} are leading to deviations rent-price ratio estimates and trends. Below, we examine two factors that may be leading to these variations: 1) between tenure sample composition; and 2) geographic aggregation.\par -->
-
-<!-- Note that we focus on `between-tenure' issues; those that are likely to arise due to comparing sales and rentals. We purposefully ignore `within-tenure' issues for two reasons.  First, these issues such as sample selection bias in index creation \citep*{case1991choosing, haurin1991house, wallace1997construction, nagaraja2014repeat} and hedonic model misspecification \citep*{Meese1991, McMillen2003, McMillen2006} are covered in length by other authors. `Between-tenure' issues on the other are rarely addressed. And second, and most importantly, we use identically specified models and sample selection methods for sales and rentals within each of the three methods and, therefore, any impact of `within-tenure' issues are likely to impact both the individual sale and rent indexes and values somewhat equally and will cancel out in the division that creates the rent-price ratio.\par -->
+Note that we focus on `between-tenure' issues; those that are likely to arise due to comparing sales and rentals. We purposefully ignore `within-tenure' issues for two reasons.  First, these issues such as sample selection bias in index creation \citep*{case1991choosing, haurin1991house, wallace1997construction, nagaraja2014repeat} and hedonic model misspecification \citep*{Meese1991, McMillen2003, McMillen2006} are covered in length by other authors. `Between-tenure' issues on the other are rarely addressed. And second, and most importantly, we use identically specified models and sample selection methods for sales and rentals within each of the three methods and, therefore, any impact of `within-tenure' issues are likely to impact both the individual sale and rent indexes and values somewhat equally and will cancel out in the division that creates the rent-price ratio.\par
 
 <!-- \subsection*{Tenure Composition} -->
 
-<!-- The matching method utilizes a materially different and more restrictive sample than the index or imputation approach.  This restricted sample includes only those homes that have both sold and rental observations. As a result, there is the possibility that the deviation (or some part thereof) between the three RPR trends are a result of the differences in the samples and not the methods themselves. We examine this possibility by comparing the original index, imputation and matching estimates with estimates generated by the index and imputation method that rely only on the restricted sample used by the matching method.\par -->
-
-<!-- From this analysis (Figure \ref{fig:compplot}) we find that for both apartments and houses the imputed rent-price ratios (top panels) created with the restricted matched sample (dashed line) are markedly higher than those from the full sample (thick solid line).  The restricted sample imputation estimates are also very similar to the ratios from the matched approach (thin line). Correcting for differences between the two samples creates essentially identical rent-price ratios trends between the impute and match method.  This finding suggests two things.  First, that the assumption by previous authors \citep*{Himmelberg2005, glaeser2007arbitrage, verbrugge2008puzzling, garner2009reconciling} that the sold and rented markets have measurably different samples proves true and that the sold market contains more expensive dwellings than the rental market.  Second, this also adds validation to the models used in the imputation and the match adjustment processes.\par -->
+The matching method utilizes a materially different and more restrictive sample than the index or imputation approach.  This restricted sample includes only those homes that have both sold and rental observations. As a result, there is the possibility that the deviation (or some part thereof) between the three RPR trends are a result of the differences in the samples and not the methods themselves. We examine this possibility by comparing the original index, imputation and matching estimates with estimates generated by the index and imputation method that rely only on the restricted sample used by the matching method.\par
 
-<!-- The matched sample (dashed line) index estimates (bottom panels) both increase to a greater degree than the restricted imputation sample (top panels).  From 2011 to the beginning of 2014, the matched sample index estimates nearly mirror those of the matched and imputation methods.  However, from 2014 onward a divergence occurs across both the apartment and house market.\par -->
+From this analysis (Figure \ref{fig:compplot}) we find that for both apartments and houses the imputed rent-price ratios (top panels) created with the restricted matched sample (dashed line) are markedly higher than those from the full sample (thick solid line).  The restricted sample imputation estimates are also very similar to the ratios from the matched approach (thin line). Correcting for differences between the two samples creates essentially identical rent-price ratios trends between the impute and match method.  This finding suggests two things.  First, that the assumption by previous authors \citep*{Himmelberg2005, glaeser2007arbitrage, verbrugge2008puzzling, garner2009reconciling} that the sold and rented markets have measurably different samples proves true and that the sold market contains more expensive dwellings than the rental market.  Second, this also adds validation to the models used in the imputation and the match adjustment processes.\par
 
-<!-- <<extract.ms.glob.data, echo=FALSE,  results='asis', warning=FALSE, cache=FALSE, comments=FALSE>>= -->
-<!--    ms.glob.house <- ms.geo.data$Global[ms.geo.data$Global$type == 'house',] -->
-<!--    ms.glob.unit <- ms.geo.data$Global[ms.geo.data$Global$type == 'unit',] -->
-<!--    ms.glob.all <- rbind(ms.glob.house, ms.glob.unit) -->
-<!--    ms.glob.all$type <- as.character(ms.glob.all$type) -->
-<!--    ms.glob.all$type[ms.glob.all$type=='house'] <- 'Houses' -->
-<!--    ms.glob.all$type[ms.glob.all$type=='unit'] <- 'Apartments' -->
-<!--    ms.glob.all$mt <- paste0(ms.glob.all$method, ms.glob.all$type) -->
-<!--    ms.glob.all$sample <- 'Matched Sample' -->
-
-<!--  ## Combine -->
-
-<!--    comb.glob <- rbind(glob.all, ms.glob.all) -->
-
-<!-- @ -->
-
-<!-- <<make.comp.data, echo=FALSE,  results='asis', warning=FALSE, cache=FALSE, comments=FALSE>>= -->
-
-<!--    comp.df <- comb.glob -->
-
-<!--    comp.df[c(161:180),] <- comp.df[41:60, ] -->
-<!--    comp.df[c(221:240),] <- comp.df[101:120, ] -->
-
-<!--    comp.df$meth.plot <- as.character(comp.df$method) -->
-<!--    comp.df$meth.plot[41:60] <- comp.df$meth.plot[101:120] <- 'Index' -->
-<!--    comp.df$meth.plot[161:180] <- comp.df$meth.plot[221:240] <- 'Index' -->
-
-<!--    comp.df$plot <- as.character(comp.df$sample) -->
-<!--    comp.df$plot[41:60] <- comp.df$plot[101:120] <- 'Reference (Match)' -->
-<!--    comp.df$plot[161:180] <- comp.df$plot[221:240] <- 'Reference (Match)' -->
-
-<!--    match.copy <- c(41:60, 101:120, 161:180, 221:240) -->
-<!--    comp.df <- rbind(comp.df, comp.df[match.copy,]) -->
-<!--    comp.df$meth.plot[match.copy] <- 'Impute' -->
-
-<!--    comp.df$plot <- factor(comp.df$plot, levels=c('Full Sample', 'Matched Sample', -->
-<!--                                                   'Reference (Match)')) -->
-<!--    comp.df$col <- ifelse(comp.df$type == 'Houses', 2, 1) -->
-<!--    comp.df$col[comp.df$plot=='Reference (Match)'] <- 3 -->
-<!--    comp.df$meth.plot <- factor(comp.df$meth.plot, levels=c('Impute', 'Index')) -->
-
-<!-- @ -->
-
-<!-- <<build.comp.plot, echo=FALSE,  results='asis', warning=FALSE, cache=FALSE, comments=FALSE, message=FALSE, fig.height=3.5>>= -->
-
-<!--     comp.plot <- ggplot(comp.df, -->
-<!--      aes(x=time, y=yield, color=as.factor(col), linetype=plot, size=plot)) + -->
-<!--      geom_line() + -->
-<!--      facet_grid(meth.plot~type) + -->
-<!--      scale_color_manual(values=c('darkorange', 'blue', 'gray80'), guide=FALSE) + -->
-<!--      scale_size_manual(values=c(1.1, 1.1, .6), guide=FALSE) + -->
-<!--      scale_linetype_manual(values=c(1, 2, 1), -->
-<!--                            labels=c('Regular Sample', 'Matched Sample', -->
-<!--                                     'Reference (Match)')) + -->
-<!--      xlab("") + -->
-<!--      ylab("Rent-Price Ratio\n") + -->
-<!--      scale_x_continuous(breaks=seq(0, 20, 4), -->
-<!--                         labels=2011:2016) + -->
-<!--      scale_y_continuous(breaks=seq(.031, .049, .003), -->
-<!--                         labels=seq(.031, .049, .003)) + -->
-<!--      coord_cartesian(ylim=c(.031, .049)) + -->
-<!--      guides(linetype=guide_legend( -->
-<!--        override.aes = list(size=c(1.5, 1.5, .5),color=c('black', 'black', 'gray80')))) + -->
-<!--      theme_bw() + -->
-<!--      theme(legend.title=element_blank(), -->
-<!--            legend.position='bottom', -->
-<!--            legend.key.width=unit(2.5, "cm"), -->
-<!--            legend.key=element_rect(fill='white', color='white'), -->
-<!--            strip.text.x = element_text(size = 15), -->
-<!--            strip.text.y = element_text(size = 15)) -->
-
-<!-- @ -->
-
-<!-- \begin{figure} -->
-<!--  \centering -->
-
-<!-- <<comp.plot, echo=FALSE,  results='asis', warning=FALSE, cache=FALSE, comments=FALSE, message=FALSE, fig.height=4>>= -->
-<!--   comp.plot -->
-<!-- @ -->
-
-<!-- \caption{Changes to Index/Impute Methods with Matched Sample} -->
-<!-- \label{fig:compplot} -->
-<!-- \end{figure} -->
-
-<!-- \subsection*{Geographic Disaggregation} -->
-
-<!-- After correcting for differences in tenure sample composition there remains some deviation betwen the index method and the impute and match approach.  This deviation largely exists during 2014 and 2015, a period of very strong house price appreciation but slow and steady rental growth (Figure \ref{fig:srindexes}). As discussed above, the index method uses an aggregate approach whereas the impute and match method make property-specific comparisons. By aggregating and then calculating, it is possible that if the composition of rental and sold homes changes over time, even when controlled by the restricted sample, then the index method may be biased.  As an example, if within the restricted sample the larger homes rented at a higher relative frequency during one period and sold at a higher relative frequency in another, the index method would be biased in both periods.  In other words, the index approach does not control for the temporal variation of within-tenure composition changes, whereas the impute and match methods do.\par -->
-
-<!-- While a significant change in the tenure mix of larger versus smaller homes over time may be unlikely, significant changes to the location of the tenure mix is much more plausible.  As urban areas initially develop, re-develop or gentrify the tenure mix in these areas can change very quickly.  Such movements in local property sub-markets are also more likely during periods of strong market growth, similar to that experienced in Melbourne over 2014 and 2015.\par -->
-
-<!-- We can test for the potential of changing locational demand between tenure types by performing our comparative analyses at smaller levels of geographic disaggregation.  This allows us to examine if the differences between methods vary based on the geographic level of analysis.  To test this proposition we recalculate rent-price ratio methods for both the full and the matched-only samples at the Local Government Area (LGA) and the Suburb level.  Comparisons between the three methods, at all three geographic levels (Metro, LGA and Suburb) and across the full and the matched-only samples are showing in Figures \ref{allunitdif} and \ref{allhousedif}. for houses and apartments, respectively. The trend lines for LGA and suburbs are calculated by first comparing the differences between methods in each individual geographic area (LGA or Suburb) and then taking a measure of central tendency of the area-specific values at each time period of analysis.\footnote{Time trends are smoothed with a LOESS.}\par -->
-
-<!-- <<extract.full.dif.data, echo=FALSE,  results='asis', warning=FALSE, cache=FALSE, comments=FALSE>>= -->
-<!--     hd.data <- full.dif.data$houses -->
-<!--     ud.data <- full.dif.data$units -->
-
-<!--     hd.data <- hd.data[!is.na(hd.data$meth.dif), ] -->
-<!--     ud.data <- ud.data[!is.na(ud.data$meth.dif), ] -->
-
-<!--     hd.data$geo.level[hd.data$geo.level == 'lga'] <- 'LGA' -->
-<!--     hd.data$geo.level[hd.data$geo.level == 'suburb'] <- 'Suburb' -->
-<!--     ud.data$geo.level[ud.data$geo.level == 'lga'] <- 'LGA' -->
-<!--     ud.data$geo.level[ud.data$geo.level == 'suburb'] <- 'Suburb' -->
-<!--     ud.data$geo.level[ud.data$geo.level == 'Global'] <- 'Metro' -->
-<!--     hd.data$geo.level[hd.data$geo.level == 'Global'] <- 'Metro' -->
-
-<!--     hd.data$geo.level <- factor(hd.data$geo.level, -->
-<!--                                 levels=c('Metro', 'LGA', 'Suburb')) -->
-<!--     ud.data$geo.level <- factor(ud.data$geo.level, -->
-<!--                                 levels=c('Metro', 'LGA', 'Suburb')) -->
-
-<!--     hd.data$comp.method <- factor(hd.data$comp.method, -->
-<!--                                    levels=c('Index - Impute', -->
-<!--                                             'Index - Match', -->
-<!--                                             'Impute - Match')) -->
-<!--     ud.data$comp.method <- factor(ud.data$comp.method, -->
-<!--                                    levels=c('Index - Impute', -->
-<!--                                             'Index - Match', -->
-<!--                                             'Impute - Match')) -->
-<!--     hd.data$sample <- 'Full Sample' -->
-<!--     ud.data$sample <- 'Full Sample' -->
-
-<!-- @ -->
-
-<!-- <<extract.ms.dif.data, echo=FALSE,  results='asis', warning=FALSE, cache=FALSE, comments=FALSE>>= -->
-<!--     hd.ms.data <- ms.dif.data$houses -->
-<!--     ud.ms.data <- ms.dif.data$units -->
-
-<!--     hd.ms.data <- hd.ms.data[!is.na(hd.ms.data$meth.dif), ] -->
-<!--     ud.ms.data <- ud.ms.data[!is.na(ud.ms.data$meth.dif), ] -->
-
-<!--     hd.ms.data$geo.level[hd.ms.data$geo.level == 'lga'] <- 'LGA' -->
-<!--     hd.ms.data$geo.level[hd.ms.data$geo.level == 'suburb'] <- 'Suburb' -->
-<!--     ud.ms.data$geo.level[ud.ms.data$geo.level == 'lga'] <- 'LGA' -->
-<!--     ud.ms.data$geo.level[ud.ms.data$geo.level == 'suburb'] <- 'Suburb' -->
-<!--     ud.ms.data$geo.level[ud.ms.data$geo.level == 'Global'] <- 'Metro' -->
-<!--     hd.ms.data$geo.level[hd.ms.data$geo.level == 'Global'] <- 'Metro' -->
-
-<!--     hd.ms.data$geo.level <- factor(hd.ms.data$geo.level, -->
-<!--                                    levels=c('Metro', 'LGA', 'Suburb')) -->
-<!--     ud.ms.data$geo.level <- factor(ud.ms.data$geo.level, -->
-<!--                                    levels=c('Metro', 'LGA', 'Suburb')) -->
-
-<!--     hd.ms.data$comp.method <- factor(hd.ms.data$comp.method, -->
-<!--                                    levels=c('Index - Impute', -->
-<!--                                             'Index - Match', -->
-<!--                                             'Impute - Match')) -->
-<!--     ud.ms.data$comp.method <- factor(ud.ms.data$comp.method, -->
-<!--                                    levels=c('Index - Impute', -->
-<!--                                             'Index - Match', -->
-<!--                                             'Impute - Match')) -->
-<!--     hd.ms.data$sample <- 'Matched Sample' -->
-<!--     ud.ms.data$sample <- 'Matched Sample' -->
-<!-- @ -->
-
-<!-- <<combine.hddata, echo=FALSE,  results='asis', warning=FALSE, cache=FALSE, comments=FALSE>>= -->
-
-<!--   house.dd <- rbind(hd.data, hd.ms.data) -->
-<!--   unit.dd <- rbind(ud.data, ud.ms.data) -->
-
-<!--   house.dd$CID <- paste0(house.dd$sample, substr(house.dd$geo.level,1,3), -->
-<!--                          house.dd$comp.method, '.', house.dd$time) -->
-<!--   house.calc <- tapply(house.dd$meth.dif, house.dd$CID, median) -->
-<!--   house.ddd <- data.frame(sample=c(rep('Full Sample', 180), rep('Matched Sample', 180)), -->
-<!--                           time=rep(c(1,10:19,2,20,3:9), 18), -->
-<!--                           meth.dif=house.calc, -->
-<!--                           geo.level=rep(c(rep('LGA', 60), rep('Metro', 60), -->
-<!--                                           rep('Suburb', 60)), 2), -->
-<!--                           comp.method=rep(c(rep("Impute - Match", 20), -->
-<!--                                             rep('Index - Impute', 20), -->
-<!--                                             rep('Index - Match', 20)), 3) -->
-<!--                           ) -->
-<!--   house.ddd$geo.level <- factor(house.ddd$geo.level, levels=c('Metro', 'LGA', 'Suburb')) -->
-<!--   house.ddd$comp.method <- factor(house.ddd$comp.method, -->
-<!--                                   levels=c('Index - Impute', 'Index - Match', -->
-<!--                                            'Impute - Match')) -->
-
-<!--   unit.dd$CID <- paste0(unit.dd$sample, substr(unit.dd$geo.level,1,3), -->
-<!--                          unit.dd$comp.method, '.', unit.dd$time) -->
-<!--   unit.calc <- tapply(unit.dd$meth.dif, unit.dd$CID, median) -->
-<!--   unit.ddd <- data.frame(sample=c(rep('Full Sample', 180), rep('Matched Sample', 180)), -->
-<!--                           time=rep(c(1,10:19,2,20,3:9), 18), -->
-<!--                           meth.dif=unit.calc, -->
-<!--                           geo.level=rep(c(rep('LGA', 60), rep('Metro', 60), -->
-<!--                                           rep('Suburb', 60)), 2), -->
-<!--                           comp.method=rep(c(rep("Impute - Match", 20), -->
-<!--                                             rep('Index - Impute', 20), -->
-<!--                                             rep('Index - Match', 20)), 3) -->
-<!--                           ) -->
-<!--   unit.ddd$geo.level <- factor(unit.ddd$geo.level, levels=c('Metro', 'LGA', 'Suburb')) -->
-<!--   unit.ddd$comp.method <- factor(unit.ddd$comp.method, -->
-<!--                                   levels=c('Index - Impute', 'Index - Match', -->
-<!--                                            'Impute - Match')) -->
-<!-- @ -->
-
-<!-- <<house.dif, echo=FALSE,  results='asis', warning=FALSE, cache=FALSE, comments=FALSE, message=FALSE>>= -->
-<!--   hd.plot <- ggplot(house.ddd, -->
-<!--                     aes(x=time, y=meth.dif, group=geo.level, -->
-<!--                         colour=geo.level, size=geo.level)) + -->
-<!--              #geom_line() + -->
-<!--              stat_smooth(se=FALSE)+ -->
-<!--              xlab("") + -->
-<!--              ylab("Difference in RPR Estimate\n") + -->
-<!--              scale_colour_manual(values=c('navy', 'blue', 'lightblue'))+ -->
-<!--              scale_size_manual(values=c(.7, 1.1, 1.7))+ -->
-<!--              scale_y_continuous(breaks=seq(-.016, 0, .002)) + -->
-<!--              scale_x_continuous(breaks=seq(0, 20, 4), -->
-<!--                                 labels=2011:2016) + -->
-<!--              facet_grid(sample~comp.method) + -->
-<!--              coord_cartesian(ylim=c(-.008, 0.002)) + -->
-<!--              geom_hline(yintercept = 0) + -->
-<!--                    theme_bw() + -->
-<!--                    theme(legend.title=element_blank(), -->
-<!--                          legend.position='bottom', -->
-<!--                          legend.key.width=unit(2.5, "cm"), -->
-<!--                          legend.key=element_rect(fill='white', color='white'), -->
-<!--                          strip.text.x = element_text(size = 10)) -->
-<!-- @ -->
-
-<!-- <<unit.dif, echo=FALSE,  results='asis', warning=FALSE, cache=FALSE, comments=FALSE, message=FALSE>>= -->
-<!--   ud.plot <- ggplot(unit.ddd, -->
-<!--                     aes(x=time, y=meth.dif, group=geo.level, -->
-<!--                         colour=geo.level, size=geo.level)) + -->
-<!--              #geom_line() + -->
-<!--              stat_smooth(se=FALSE)+ -->
-<!--              xlab("") + -->
-<!--              ylab("Difference in RPR Estimate\n") + -->
-<!--              scale_colour_manual(values=c('darkorange4', 'orange', 'gold'))+ -->
-<!--              scale_size_manual(values=c(.7, 1.1, 1.7))+ -->
-<!--              scale_y_continuous(breaks=seq(-.016, 0, .002)) + -->
-<!--              scale_x_continuous(breaks=seq(0, 20, 4), -->
-<!--                                 labels=2011:2016) + -->
-<!--              facet_grid(sample~comp.method) + -->
-<!--              coord_cartesian(ylim=c(-.008, 0.001)) + -->
-<!--              geom_hline(yintercept = 0) + -->
-<!--                    theme_bw() + -->
-<!--                    theme(legend.title=element_blank(), -->
-<!--                          legend.position='bottom', -->
-<!--                          legend.key.width=unit(2.5, "cm"), -->
-<!--                          legend.key=element_rect(fill='white', color='white'), -->
-<!--                          strip.text.x = element_text(size = 10)) -->
-<!-- @ -->
-
-
-<!-- \begin{figure} -->
-<!-- \centering -->
-
-<!-- <<unit.dif.plot.all, echo=FALSE,  results='asis', warning=FALSE, cache=FALSE, comments=FALSE, fig.height=4.5, message=FALSE>>= -->
-<!-- ud.plot -->
-<!-- @ -->
-
-<!-- \caption{Method Differences: All Geographic Levels - Apartments} -->
-<!-- \label{allunitdif} -->
-<!-- \end{figure} -->
-
-
-<!-- \begin{figure} -->
-<!-- \centering -->
-
-<!-- <<house.dif.plot.all, echo=FALSE,  results='asis', warning=FALSE, cache=FALSE, comments=FALSE, fig.height=4.5, message=FALSE>>= -->
-<!-- hd.plot -->
-<!-- @ -->
-
-<!-- \caption{Method Differences: All Geographic Levels - Houses} -->
-<!-- \label{allhousedif} -->
-<!-- \end{figure} -->
-
-<!-- Figure \ref{allunitdif} shows that moving to an LGA- or Suburb-level analysis has little impact on comparisons in the matched sample (bottom panels) but does decreases the differences between the index-impute (left panel) and the index-match (middle panel) comparisons in the full sample (top panels). This change is most evident in 2014 and 2015 period suggesting that controlling for changes to the geographic tenure mix has corrected for the large change in deviation between the index and the other methods during the period of strong market activity. No measurable change is seen in when making the impute-match comparison (right panel) across the three geo-levels.\par -->
-
-<!-- Examining the house market (Figure \ref{allhousedif}) tells a similar, but more convincing story regarding the usefulness of geographic disaggregation.  Again, the temporal variation in the differences between the index-impute (left panel) and the index-match (middle panel) comparisons are mostly alleviated by switching to a smaller geographic disaggregation,  Here, however, it is only the smallest disaggregations, the suburbs, that provide the proper correction. This suggests that there has been an observable change in the locational rent/sale mix in the house market during the strong market conditions of late 2014 to 2015. Comparisons between the impute and match methods show little relationship to the level of geographic disaggregation due to the fact that the comparisons are already being made at the property level\footnote{Additionally, the impute models control for location with spatial fixed effects at the suburb level.}.\par -->
-
-<!-- Overall, both Figures \ref{allunitdif} and \ref{allhousedif} also re-iterate the gains in similarity between the trends made by switching from the full to the matched sample. These gains are realized across all three geographic disaggregations, suggesting that simply analyzing samples at finer geographic aggregations is not a substitute for using a matched sample, if the goal is reconciling estimates.\par -->
-
-<!-- \section*{Discussion} -->
-
-<!-- Recent research on rent-price ratios has developed alternatives -- hedonic imputation and direct matching -- to the oft-used index comparison approach.  This work compares the estimates of these three methods across the Melbourne metropolitan area over the 2011 to 2015 time period.  Results are bifurcated between the house and apartment markets.\par -->
-
-<!-- We find considerable differences in the resulting rent-price ratio estimates across the three methods, with the match estimates consistently higher than the impute estimates which are consistently higher than the index estimates. Additionally, we find that rent-price ratio estimates are considerably higher for apartments than for houses. Finally, the differences between the impute and match methods remain stable over time, but the index method diverges from the other two during the period of high home price appreciation experienced in 2014 and 2015.\par -->
-
-<!-- We then set out to the explain the differences between the estimation methods.  First, we restrict the sample to homes that have both rented and sold (the data used by the match method) and re-estimate the index and impute methods.  By limiting the sample, we explain nearly all of the differences between the impute and match methods for both houses and apartments. Much of the differences between the index method and the other two are explained by limiting the sample as well, with the exception of estimates from the 2014 to 2015 time period.  As the rent-price ratios from the index and impute methods increase substantially when using the matched-only sample, this suggests that the market composition of rent and sold homes are different and that sold homes are generally more expensive, as expected.\par -->
-
-<!-- Spatially disaggregating the analysis helps to explain more than half of the remaining variation between the index method and the two others.  This is most evident when analyzing estimates at the suburb level in the house market. This finding suggests that during the strong price appreciation in 2014 and 2015 there was a measurable change in the location dynamics of the tenure mix.\par -->
-
-<!-- Our two attempts at accounting for the variation between the methods has left a small measure of differences unexplained (less than 0.001). These unexplained differences are most evident when comparing the index method to the impute and match methods. We propose that within-tenure modeling issues such as model misspecification may play a role is the differences in estimates during this time period, but leave verification of this for future resarch.\par -->
-
-<!-- \subsection*{Recommendations} -->
-
-<!-- It should be noted, that we do not consider any of the methods used to be the `correct' method. From the results above, we see that the hedonic imputation and the direct matching approach offer more stable estimates both over time and level of geographic disaggregation. This stability is aided by the fact that these two methods are property specific and are able to better control for changes in the locational dynamics of the rent/sale mix over time.\par -->
-
-<!-- When choosing between the impute and match method, the purpose of the analysis and the intended meaning of the rent-price ratio should be carefully considered.  The imputation method, by virtue of creating a rental and sales value for each rented and sold property in the market, is best at addressing research questions looking to analyze the potential rent-price ratio for all homes in the market, regardless of whether or not they are actually renting or selling.  This type of analysis can be very useful in user-cost calculations or exercises that are looking to quantify imputed rents for owner occcupied homes.  The match method, on the other hand, only measures the rent-price ratio for homes that are, or have recently been, actively rented or sold.  As we see in Figure \ref{fig:compplot}, this restricted sample of homes is materially different than the full sample of homes on the market, namely of a lower sale price.  In other words, high end homes are not as equally represented in the rental market as they are in the for sale market. Simply put, imputation is best when looking at the hypothetical rent/sale relationship of all segments of the market while the matched method is preferable when analysing the actual, on-going dynamics of homes that are being rented and sold.\par -->
-
-<!-- The added stability and specificity of the impute and matched approaches come with a cost; data availability.  While access to property-specific sales and rental data is increasing, it may still be unavailable or unaffordable for researchers in certain areas.  In these cases, the index method is the only available option.  In such cases, our results show that the smaller the geographic aggregation of the index, the more stable and better able the index method is to correlate with the impute and match estimates.  As we also found that high end sold homes may bias downward the rent-price ratios from an index method, the use of a price stratified index or some other specification that limits the influence of the tendency for sold homes to be of a higher quality and price than rentals may be helpful.\par -->
-
-<!-- We also find that there are consistent and measurable differences between the rent-price ratios for apartments and homes and that analyses of RPR trends should take structure type into account if possible.  When analyzing apartments, which are more centrally located and geographically clustered, we do find that benefits of geographic disaggregation, especially after controlling for tenure sample composition are less than when analyzing the house market.\par -->
-
-<!-- Future work should seek to validate these results across other cities, ideally in different countries to determine if these results are unique to the Australian market.  More work could also be applied to examine the accuracy of statistical models underlying the estimation methods during times of volatile market activity.\par -->
-
-<!-- Finally, all code used to complete this analysis is available at:\par {\color{blue} \href{https://github.com/anonymousreAuthor/rprComparisonPaper}{https://github.com/anonymousReauthor/rprComparisonPaper}}.\footnote{This link will be moved to the Author's Github page after anonymous review.}\par -->
-
-<!-- \subsubsection*{Acknowledgements} -->
-
-<!-- The authors would like to thank Australian Property Monitors (APM) and the Domain Group for the use of their transactional data and the Australian Urban Research Infrastructure Network (AURIN) for the geographic data. -->
+The matched sample (dashed line) index estimates (bottom panels) both increase to a greater degree than the restricted imputation sample (top panels).  From 2011 to the beginning of 2014, the matched sample index estimates nearly mirror those of the matched and imputation methods.  However, from 2014 onward a divergence occurs across both the apartment and house market.\par
 
+![](figures/compplot.jpg)
 
+\subsection*{Geographic Disaggregation}
 
+After correcting for differences in tenure sample composition there remains some deviation betwen the index method and the impute and match approach.  This deviation largely exists during 2014 and 2015, a period of very strong house price appreciation but slow and steady rental growth (Figure \ref{fig:srindexes}). As discussed above, the index method uses an aggregate approach whereas the impute and match method make property-specific comparisons. By aggregating and then calculating, it is possible that if the composition of rental and sold homes changes over time, even when controlled by the restricted sample, then the index method may be biased.  As an example, if within the restricted sample the larger homes rented at a higher relative frequency during one period and sold at a higher relative frequency in another, the index method would be biased in both periods.  In other words, the index approach does not control for the temporal variation of within-tenure composition changes, whereas the impute and match methods do.\par
 
+While a significant change in the tenure mix of larger versus smaller homes over time may be unlikely, significant changes to the location of the tenure mix is much more plausible.  As urban areas initially develop, re-develop or gentrify the tenure mix in these areas can change very quickly.  Such movements in local property sub-markets are also more likely during periods of strong market growth, similar to that experienced in Melbourne over 2014 and 2015.\par
 
+We can test for the potential of changing locational demand between tenure types by performing our comparative analyses at smaller levels of geographic disaggregation.  This allows us to examine if the differences between methods vary based on the geographic level of analysis.  To test this proposition we recalculate rent-price ratio methods for both the full and the matched-only samples at the Local Government Area (LGA) and the Suburb level.  Comparisons between the three methods, at all three geographic levels (Metro, LGA and Suburb) and across the full and the matched-only samples are showing in Figures \ref{allunitdif} and \ref{allhousedif}. for houses and apartments, respectively. The trend lines for LGA and suburbs are calculated by first comparing the differences between methods in each individual geographic area (LGA or Suburb) and then taking a measure of central tendency of the area-specific values at each time period of analysis.\footnote{Time trends are smoothed with a LOESS.}\par
 
+![](figures/hdplot.jpg)
 
+![](figures/udplot.jpg)
 
+Figure \ref{allunitdif} shows that moving to an LGA- or Suburb-level analysis has little impact on comparisons in the matched sample (bottom panels) but does decreases the differences between the index-impute (left panel) and the index-match (middle panel) comparisons in the full sample (top panels). This change is most evident in 2014 and 2015 period suggesting that controlling for changes to the geographic tenure mix has corrected for the large change in deviation between the index and the other methods during the period of strong market activity. No measurable change is seen in when making the impute-match comparison (right panel) across the three geo-levels.\par
 
+Examining the house market (Figure \ref{allhousedif}) tells a similar, but more convincing story regarding the usefulness of geographic disaggregation.  Again, the temporal variation in the differences between the index-impute (left panel) and the index-match (middle panel) comparisons are mostly alleviated by switching to a smaller geographic disaggregation,  Here, however, it is only the smallest disaggregations, the suburbs, that provide the proper correction. This suggests that there has been an observable change in the locational rent/sale mix in the house market during the strong market conditions of late 2014 to 2015. Comparisons between the impute and match methods show little relationship to the level of geographic disaggregation due to the fact that the comparisons are already being made at the property level\footnote{Additionally, the impute models control for location with spatial fixed effects at the suburb level.}.\par
 
+Overall, both Figures \ref{allunitdif} and \ref{allhousedif} also re-iterate the gains in similarity between the trends made by switching from the full to the matched sample. These gains are realized across all three geographic disaggregations, suggesting that simply analyzing samples at finer geographic aggregations is not a substitute for using a matched sample, if the goal is reconciling estimates.\par
 
+\section*{Discussion}
 
+Recent research on rent-price ratios has developed alternatives -- hedonic imputation and direct matching -- to the oft-used index comparison approach.  This work compares the estimates of these three methods across the Melbourne metropolitan area over the 2011 to 2015 time period.  Results are bifurcated between the house and apartment markets.\par
 
+We find considerable differences in the resulting rent-price ratio estimates across the three methods, with the match estimates consistently higher than the impute estimates which are consistently higher than the index estimates. Additionally, we find that rent-price ratio estimates are considerably higher for apartments than for houses. Finally, the differences between the impute and match methods remain stable over time, but the index method diverges from the other two during the period of high home price appreciation experienced in 2014 and 2015.\par
+
+We then set out to the explain the differences between the estimation methods.  First, we restrict the sample to homes that have both rented and sold (the data used by the match method) and re-estimate the index and impute methods.  By limiting the sample, we explain nearly all of the differences between the impute and match methods for both houses and apartments. Much of the differences between the index method and the other two are explained by limiting the sample as well, with the exception of estimates from the 2014 to 2015 time period.  As the rent-price ratios from the index and impute methods increase substantially when using the matched-only sample, this suggests that the market composition of rent and sold homes are different and that sold homes are generally more expensive, as expected.\par
+
+Spatially disaggregating the analysis helps to explain more than half of the remaining variation between the index method and the two others.  This is most evident when analyzing estimates at the suburb level in the house market. This finding suggests that during the strong price appreciation in 2014 and 2015 there was a measurable change in the location dynamics of the tenure mix.\par
+
+Our two attempts at accounting for the variation between the methods has left a small measure of differences unexplained (less than 0.001). These unexplained differences are most evident when comparing the index method to the impute and match methods. We propose that within-tenure modeling issues such as model misspecification may play a role is the differences in estimates during this time period, but leave verification of this for future resarch.\par
+
+\subsection*{Recommendations}
+
+It should be noted, that we do not consider any of the methods used to be the `correct' method. From the results above, we see that the hedonic imputation and the direct matching approach offer more stable estimates both over time and level of geographic disaggregation. This stability is aided by the fact that these two methods are property specific and are able to better control for changes in the locational dynamics of the rent/sale mix over time.\par
+
+When choosing between the impute and match method, the purpose of the analysis and the intended meaning of the rent-price ratio should be carefully considered.  The imputation method, by virtue of creating a rental and sales value for each rented and sold property in the market, is best at addressing research questions looking to analyze the potential rent-price ratio for all homes in the market, regardless of whether or not they are actually renting or selling.  This type of analysis can be very useful in user-cost calculations or exercises that are looking to quantify imputed rents for owner occcupied homes.  The match method, on the other hand, only measures the rent-price ratio for homes that are, or have recently been, actively rented or sold.  As we see in Figure \ref{fig:compplot}, this restricted sample of homes is materially different than the full sample of homes on the market, namely of a lower sale price.  In other words, high end homes are not as equally represented in the rental market as they are in the for sale market. Simply put, imputation is best when looking at the hypothetical rent/sale relationship of all segments of the market while the matched method is preferable when analysing the actual, on-going dynamics of homes that are being rented and sold.\par
+
+The added stability and specificity of the impute and matched approaches come with a cost; data availability.  While access to property-specific sales and rental data is increasing, it may still be unavailable or unaffordable for researchers in certain areas.  In these cases, the index method is the only available option.  In such cases, our results show that the smaller the geographic aggregation of the index, the more stable and better able the index method is to correlate with the impute and match estimates.  As we also found that high end sold homes may bias downward the rent-price ratios from an index method, the use of a price stratified index or some other specification that limits the influence of the tendency for sold homes to be of a higher quality and price than rentals may be helpful.\par
+
+We also find that there are consistent and measurable differences between the rent-price ratios for apartments and homes and that analyses of RPR trends should take structure type into account if possible.  When analyzing apartments, which are more centrally located and geographically clustered, we do find that benefits of geographic disaggregation, especially after controlling for tenure sample composition are less than when analyzing the house market.\par
+
+Future work should seek to validate these results across other cities, ideally in different countries to determine if these results are unique to the Australian market.  More work could also be applied to examine the accuracy of statistical models underlying the estimation methods during times of volatile market activity.\par
+
+Finally, all code used to complete this analysis is available https://github.com/anonymousreAuthor/rprComparisonPaper. \footnote{This link will be moved to the Author's Github page after anonymous review.}\par
+
+\subsubsection*{Acknowledgements}
+
+The authors would like to thank Australian Property Monitors (APM) and the Domain Group for the use of their transactional data and the Australian Urban Research Infrastructure Network (AURIN) for the geographic data.
 
 # References
