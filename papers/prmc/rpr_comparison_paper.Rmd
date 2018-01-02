@@ -105,7 +105,7 @@ For an observed sale, the rent-price ratio is expressed as:
 where \textit{RPR$_{i,t}$} is the rent-price ratio for property \textit{i} at time \textit{t} (the time of the sale), \textit{SP$_{i,t}$} is the observed sale price at time \textit{t} and $\widehat{R_{i, t}}$ is the predicted or imputed rental value at time \textit{t} expressed by the following standard hedonic price or rent equation:
    
 \begin{equation}
-  \widehat{R_{i,t}} = \beta_{0} + \beta_{1} X_{i} + \epsilon _{i} 
+  {R_{i,t}} = \beta_{0} + \beta_{1} X_{i} + \epsilon _{i} 
 \end{equation}  
   
 where \textit{X$_{i}$} is the vector of independent variables for property \textit{i}, \textit{$\beta_{0}$} is a constant, \textit{$\beta_{1}$} is a vector of estimated coefficients and \textit{$\epsilon _{i}$} is an error term. 
@@ -122,7 +122,7 @@ Likewise, for an observed rental, the rent-price ratio is expressed as:
 where \textit{RPR$_{i,t}$} is the rent-price ratio for property \textit{i} at time \textit{t} (the time of the rental), \textit{R$_{i,t}$} is the observed rental value at time \textit{t} and \textit{$\widehat{SP_{i, t}}$} is the predicted or imputed sale price at time \textit{t} expressed by the following standard hedonic price or rent equation:
 
 \begin{equation}
-\widehat{SP_{i,t}} = \beta_{0} + \beta_{1} X_{i} + \epsilon {_i}
+{SP_{i,t}} = \beta_{0} + \beta_{1} X_{i} + \epsilon {_i}
 \end{equation}
 
 where \textit{X$_{i}$} is the vector of independent variables for property \textit{i}, \textit{$\beta_{0}$} is a constant, \textit{$\beta_{1}$} is a vector of estimated coefficients and \textit{$\epsilon_{i}$} is an error term. The property-specific rent-price ratios are then pooled at the geographic level of analysis, \textit{j}, and an overall rent-price ratio is estimated by taking a measure of central tendency at time \textit{t}.
