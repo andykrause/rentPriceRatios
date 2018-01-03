@@ -127,8 +127,7 @@
           legend.text=element_text(size=16))
   
   # Export to JPR
-  jpeg(file.path(fig_path, 'index1.jpg'), 
-       width = 1100, height = 900, quality=100)
+  jpeg(file.path(fig_path, 'index1.jpg'), width = 1000, height = 400, quality=100)
     index.plot
   dev.off()
   
@@ -179,10 +178,9 @@
           legend.text=element_text(size=16))
   
   # Export to JPG
-  jpeg(file.path(fig_path, 'allglob.jpg'), width = 1100, height = 900, quality=100)
+  jpeg(file.path(fig_path, 'allglob.jpg'), width = 1000, height = 550, quality=100)
     all.glob
   dev.off()
-  
   
 ### Global Matched Sample Plot (Figure 4) ------------------------------------------------  
   
@@ -250,18 +248,13 @@
           legend.text=element_text(size=16))
   
   # Export to JPG
-  jpeg(file.path(fig_path, 'compplot.jpg'), width = 1100, height = 900, quality=100)
+  jpeg(file.path(fig_path, 'compplot.jpg'), width = 1000, height = 550, quality=100)
     comp.plot
   dev.off()
   
+### House and Unit Differences (Figs 5 and 6) --------------------------------------------    
     
-    
-  
-  
-  
-  
-    
-    
+ ## Data Prep
     
     hd.data <- full.dif.data$houses
     ud.data <- full.dif.data$units
@@ -321,9 +314,10 @@
     hd.ms.data$sample <- 'Matched Sample'
     ud.ms.data$sample <- 'Matched Sample'
     
+  ## Combine data  
+    
     house.dd <- rbind(hd.data, hd.ms.data)
     unit.dd <- rbind(ud.data, ud.ms.data)
-    
     house.dd$CID <- paste0(house.dd$sample, substr(house.dd$geo.level,1,3),
                            house.dd$comp.method, '.', house.dd$time)
     house.calc <- tapply(house.dd$meth.dif, house.dd$CID, median)
@@ -334,8 +328,7 @@
                                             rep('Suburb', 60)), 2),
                             comp.method=rep(c(rep("Impute - Match", 20),
                                               rep('Index - Impute', 20),
-                                              rep('Index - Match', 20)), 3)
-    )
+                                              rep('Index - Match', 20)), 3))
     house.ddd$geo.level <- factor(house.ddd$geo.level, levels=c('Metro', 'LGA', 'Suburb'))
     house.ddd$comp.method <- factor(house.ddd$comp.method,
                                     levels=c('Index - Impute', 'Index - Match',
@@ -351,16 +344,17 @@
                                            rep('Suburb', 60)), 2),
                            comp.method=rep(c(rep("Impute - Match", 20),
                                              rep('Index - Impute', 20),
-                                             rep('Index - Match', 20)), 3)
-    )
+                                             rep('Index - Match', 20)), 3))
     unit.ddd$geo.level <- factor(unit.ddd$geo.level, levels=c('Metro', 'LGA', 'Suburb'))
     unit.ddd$comp.method <- factor(unit.ddd$comp.method,
                                    levels=c('Index - Impute', 'Index - Match',
                                             'Impute - Match'))
   
-        hd.plot <- ggplot(house.ddd,
-                        aes(x=time, y=meth.dif, group=geo.level,
-                            colour=geo.level, size=geo.level)) +
+  ## Build plot object  
+    
+   hd.plot <- ggplot(house.ddd,
+                     aes(x=time, y=meth.dif, group=geo.level,
+                         colour=geo.level, size=geo.level)) +
       #geom_line() +
       stat_smooth(se=FALSE)+
       xlab("") +
@@ -378,9 +372,19 @@
             legend.position='bottom',
             legend.key.width=unit(2.5, "cm"),
             legend.key=element_rect(fill='white', color='white'),
-            strip.text.x = element_text(size = 10))
+            strip.text.x = element_text(size = 16),
+            strip.text.y = element_text(size = 16),
+            axis.title=element_text(size=16, face="bold"),
+            axis.text=element_text(size=12),
+            legend.text=element_text(size=16))
     
-      ud.plot <- ggplot(unit.ddd,
+  # Export to JPG
+   jpeg(file.path(fig_path, 'hdplot.jpg'), width = 1000, height = 500, quality=100)
+     hd.plot
+   dev.off()
+   
+  ## Create Plot 
+  ud.plot <- ggplot(unit.ddd,
                         aes(x=time, y=meth.dif, group=geo.level,
                             colour=geo.level, size=geo.level)) +
       #geom_line() +
@@ -400,19 +404,20 @@
             legend.position='bottom',
             legend.key.width=unit(2.5, "cm"),
             legend.key=element_rect(fill='white', color='white'),
-            strip.text.x = element_text(size = 10))
+            strip.text.x = element_text(size = 16),
+            strip.text.y = element_text(size = 16),
+            axis.title=element_text(size=16, face="bold"),
+            axis.text=element_text(size=12),
+            legend.text=element_text(size=16))
     
       
-      jpeg(file.path(getwd(), 'papers', 'prmc', 'figures', 'hdplot.jpg'), 
-           width = 1100, height = 900, quality=100)
-       hd.plot
-      dev.off()
+ # Export to JPG
       
-      jpeg(file.path(getwd(), 'papers', 'prmc', 'figures', 'udplot.jpg'), 
-           width = 1100, height = 900, quality=100)
+  jpeg(file.path(fig_path, 'udplot.jpg'), width = 1000, height = 500, quality=100)
        ud.plot
-      dev.off()
+  dev.off()
       
-  
+#*****************************************************************************************
+#*****************************************************************************************
   
   
