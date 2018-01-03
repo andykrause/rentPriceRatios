@@ -71,23 +71,25 @@ library(hexbin)
           strip.text.x = element_text(size = 30),
           strip.text.y = element_text(size = 30))
   
-  jpeg(file.path(getwd(), 'figures', 'melbMap.jpg'), 
+  jpeg(file.path(getwd(), 'papers', 'prmc', 'figures', 'melbMap.jpg'), 
        width = 1100, height = 900, quality=100)
       loc.plot
   dev.off()
-  
+ 
+ ### Index Plot (Figure 2) ---------------------------------------------------------------  
+   
   # Extract the index values
   glob.index <- full$index.data$Global$Global
   
   index.df <- data.frame(type=c(rep('Houses', 40), rep('Apartments',40)),
-                         tenure=rep(c(rep('Sales', 20), rep('Rentals', 20))),
+                         tenure=rep(c(rep('Sales   ', 20), rep('Rentals        ', 20))),
                          index=c(glob.index$house.sale, glob.index$house.rent,
                                  glob.index$unit.sale, glob.index$unit.rent),
                          time=rep(1:20,4))
   
   index.plot <- ggplot(index.df,
                        aes(x=time, y=index, color=type, linetype=tenure)) +
-    geom_line(size=1.2) +
+    geom_line(size=1.8) +
     scale_colour_manual(values=c('darkorange', 'blue'), guide=FALSE)+
     scale_linetype_manual(values=c(3, 1), name='Tenure Type') +
     scale_x_continuous(labels=c(2011:2016),
@@ -100,13 +102,17 @@ library(hexbin)
           legend.position='bottom',
           legend.key.width=unit(2, "cm"),
           legend.key=element_rect(fill='white', color='white'),
-          strip.text.x = element_text(size = 18))
+          strip.text.x = element_text(size = 18),
+          axis.text=element_text(size=12),
+          axis.title=element_text(size=16,face="bold"),
+          legend.text=element_text(size=16))
   
-  jpeg(file.path(getwd(), 'figures', 'index1.jpg'), 
+  jpeg(file.path(getwd(),'papers', 'prmc',  'figures', 'index1.jpg'), 
        width = 1100, height = 900, quality=100)
     index.plot
   dev.off()
   
+  ### Global Comparison Plot (Figure 2) ---------------------------------------------------------------  
   
   # Set colors for plots
   unitCols <- colorRampPalette(brewer.pal(9, 'Oranges'))(100)[c(95, 50, 25)]
@@ -144,12 +150,17 @@ library(hexbin)
           legend.position='bottom',
           legend.key.width=unit(2, "cm"),
           legend.key=element_rect(fill='white', color='white'),
-          strip.text.x = element_text(size = 15))
+          strip.text.x = element_text(size = 15),
+          axis.title=element_text(size=16, face="bold"),
+          axis.text=element_text(size=12),
+          legend.text=element_text(size=16))
   
-  jpeg(file.path(getwd(), 'figures', 'allglob.jpg'), 
+  jpeg(file.path(getwd(), 'papers', 'prmc', 'figures', 'allglob.jpg'), 
        width = 1100, height = 900, quality=100)
     all.glob
   dev.off()
+  
+  ### Global Comparison Plot (Figure 2) ---------------------------------------------------------------  
   
   ms.glob.house <- ms.geo.data$Global[ms.geo.data$Global$type == 'house',]
   ms.glob.unit <- ms.geo.data$Global[ms.geo.data$Global$type == 'unit',]
@@ -192,7 +203,7 @@ library(hexbin)
     geom_line() +
     facet_grid(meth.plot~type) +
     scale_color_manual(values=c('darkorange', 'blue', 'gray80'), guide=FALSE) +
-    scale_size_manual(values=c(1.1, 1.1, .6), guide=FALSE) +
+    scale_size_manual(values=c(1.7, 1.7, .9), guide=FALSE) +
     scale_linetype_manual(values=c(1, 2, 1),
                           labels=c('Regular Sample', 'Matched Sample',
                                    'Reference (Match)')) +
@@ -211,9 +222,12 @@ library(hexbin)
           legend.key.width=unit(2.5, "cm"),
           legend.key=element_rect(fill='white', color='white'),
           strip.text.x = element_text(size = 15),
-          strip.text.y = element_text(size = 15))
+          strip.text.y = element_text(size = 15),
+          axis.title=element_text(size=16, face="bold"),
+          axis.text=element_text(size=12),
+          legend.text=element_text(size=16))
   
-    jpeg(file.path(getwd(), 'figures', 'compplot.jpg'), 
+    jpeg(file.path(getwd(),'papers', 'prmc',  'figures', 'compplot.jpg'), 
          width = 1100, height = 900, quality=100)
       comp.plot
     dev.off()
@@ -358,12 +372,12 @@ library(hexbin)
             strip.text.x = element_text(size = 10))
     
       
-      jpeg(file.path(getwd(), 'figures', 'hdplot.jpg'), 
+      jpeg(file.path(getwd(), 'papers', 'prmc', 'figures', 'hdplot.jpg'), 
            width = 1100, height = 900, quality=100)
        hd.plot
       dev.off()
       
-      jpeg(file.path(getwd(), 'figures', 'udplot.jpg'), 
+      jpeg(file.path(getwd(), 'papers', 'prmc', 'figures', 'udplot.jpg'), 
            width = 1100, height = 900, quality=100)
        ud.plot
       dev.off()
