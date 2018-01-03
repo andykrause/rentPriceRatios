@@ -1,41 +1,55 @@
+#*****************************************************************************************
+#
+#      Script to prepare figures for the PRMC paper (JHR edition)
+#
+#*****************************************************************************************
 
-dataPath <- file.path(getwd(), 'data')
-textPath <- file.path(getwd(), 'papers', 'prmc')
+### Preliminary Commands -----------------------------------------------------------------
 
+ ## Set paths
+
+  data_path <- file.path(getwd(), 'data')
+  text_path <- file.path(getwd(), 'papers', 'prmc')
+  fig_path <- file.path(text_path, 'figures')
  
-  options(width=50)
-options(max.print="300")
- 
+ ## Load libraries
+  
   library(knitr)
-library(grid)
-library(ggplot2)
-library(maptools)
-library(rgeos)
-library(ggmap)
-library(RColorBrewer)
-library(plyr)
-library(dplyr)
-library(hexbin)
+  library(grid)
+  library(ggplot2)
+  library(maptools)
+  library(rgeos)
+  library(ggmap)
+  library(RColorBrewer)
+  library(plyr)
+  library(dplyr)
+  library(hexbin)
 
- 
-  # Source functions
+ ## Source functions
+  
   invisible(sapply(file.path(getwd(), 'functions', 
                              list.files(file.path(getwd(), 'functions'))),
                    source, echo=FALSE))
 
- 
-  ## Load workspace
+ ## Load workspace
   
-  load(file.path(dataPath, 'rprWrkspce.RData'))
+  load(file.path(data_path, 'rprWrkspce.RData'))
 
+### Create Map ---------------------------------------------------------------------------
   
+ ## Extract Poly boundaries
+  
+  # LGAs
   studyLGAs <- studyShapes$lga
   studyLGAs@data$ID <- rownames(studyLGAs@data)
   lgasGG <-  fortify(studyLGAs, region="ID")
   
+  # Suburbs
   studySubs <- studyShapes$suburb
   studySubs@data$ID <- rownames(studySubs@data)
   subsGG <-  fortify(studySubs, region="ID")
+  
+ ## Extract Point (observation) data  
   
   map.data <- full$impute.data[,c('Property_Longitude', 'Property_Latitude',
                                   'PropertyType', 'transType')]
@@ -48,13 +62,14 @@ library(hexbin)
   map.data$PropertyType[map.data$PropertyType == 'Unit'] <- "Apartments"
   map.data$PropertyType[map.data$PropertyType == 'House'] <- "Houses"
   
+ ## Build Plot Object  
+  
   loc.plot <- ggplot(data=map.data,
                      aes(x=Property_Longitude, y=Property_Latitude)) +
     geom_path(data=subsGG, aes(x=long, y=lat, group=id), color='gray80') +
     geom_path(data=lgasGG, aes(x=long, y=lat, group=id), color='gray50') +
-    stat_binhex(bins=100, aes(alpha=(..count..)^(1/3), fill=PropertyType)) +
+    stat_binhex(bins=100, aes(alpha=(..count..) ^ (1 / 3), fill=PropertyType)) +
     scale_fill_manual(values=c('darkorange', 'navy'), guide=FALSE) +
-    
     coord_cartesian(xlim=c(144.5, 145.6),
                     ylim=c(-38.2, -37.4)) +
     facet_grid(transType~PropertyType) +
@@ -71,22 +86,26 @@ library(hexbin)
           strip.text.x = element_text(size = 30),
           strip.text.y = element_text(size = 30))
   
-  jpeg(file.path(getwd(), 'papers', 'prmc', 'figures', 'melbMap.jpg'), 
+ ## Save to JPG  
+  
+  jpeg(file.path(fig_path, 'melbMap.jpg'), 
        width = 1100, height = 900, quality=100)
       loc.plot
   dev.off()
  
- ### Index Plot (Figure 2) ---------------------------------------------------------------  
+### Index Plot (Figure 2) ----------------------------------------------------------------  
    
   # Extract the index values
   glob.index <- full$index.data$Global$Global
   
+  # Convert to a data.frame
   index.df <- data.frame(type=c(rep('Houses', 40), rep('Apartments',40)),
                          tenure=rep(c(rep('Sales   ', 20), rep('Rentals        ', 20))),
                          index=c(glob.index$house.sale, glob.index$house.rent,
                                  glob.index$unit.sale, glob.index$unit.rent),
                          time=rep(1:20,4))
   
+  # Build Plot
   index.plot <- ggplot(index.df,
                        aes(x=time, y=index, color=type, linetype=tenure)) +
     geom_line(size=1.8) +
@@ -107,12 +126,14 @@ library(hexbin)
           axis.title=element_text(size=16,face="bold"),
           legend.text=element_text(size=16))
   
-  jpeg(file.path(getwd(),'papers', 'prmc',  'figures', 'index1.jpg'), 
+  # Export to JPR
+  jpeg(file.path(fig_path, 'index1.jpg'), 
        width = 1100, height = 900, quality=100)
     index.plot
   dev.off()
   
-  ### Global Comparison Plot (Figure 2) ---------------------------------------------------------------  
+  
+### Global Comparison Plot (Figure 3) ----------------------------------------------------  
   
   # Set colors for plots
   unitCols <- colorRampPalette(brewer.pal(9, 'Oranges'))(100)[c(95, 50, 25)]
@@ -122,6 +143,7 @@ library(hexbin)
   methSizes <- c(1, 1.25, 1.5)
   meth.type <- c('dotted', 'longdash', 'solid')
   
+  # Data Prep
   glob.house <- full.geo.data$Global[full.geo.data$Global$type == 'house', ]
   glob.unit <- full.geo.data$Global[full.geo.data$Global$type == 'unit', ]
   glob.all <- rbind(glob.house, glob.unit)
@@ -131,6 +153,7 @@ library(hexbin)
   glob.all$mt <- paste0(glob.all$method, glob.all$type)
   glob.all$sample <- "Full Sample"
   
+  # Build Plot Object
   all.glob <- ggplot(glob.all,
                      aes(x=time, y=yield, group=method, color=type))+
     geom_line(size=1.1, aes(linetype=method)) +
@@ -155,13 +178,15 @@ library(hexbin)
           axis.text=element_text(size=12),
           legend.text=element_text(size=16))
   
-  jpeg(file.path(getwd(), 'papers', 'prmc', 'figures', 'allglob.jpg'), 
-       width = 1100, height = 900, quality=100)
+  # Export to JPG
+  jpeg(file.path(fig_path, 'allglob.jpg'), width = 1100, height = 900, quality=100)
     all.glob
   dev.off()
   
-  ### Global Comparison Plot (Figure 2) ---------------------------------------------------------------  
   
+### Global Matched Sample Plot (Figure 4) ------------------------------------------------  
+  
+  # Data Prep
   ms.glob.house <- ms.geo.data$Global[ms.geo.data$Global$type == 'house',]
   ms.glob.unit <- ms.geo.data$Global[ms.geo.data$Global$type == 'unit',]
   ms.glob.all <- rbind(ms.glob.house, ms.glob.unit)
@@ -171,35 +196,32 @@ library(hexbin)
   ms.glob.all$mt <- paste0(ms.glob.all$method, ms.glob.all$type)
   ms.glob.all$sample <- 'Matched Sample'
   
-  ## Combine
-  
+  # Combine
   comb.glob <- rbind(glob.all, ms.glob.all)
-  
   comp.df <- comb.glob
-  
   comp.df[c(161:180),] <- comp.df[41:60, ]
   comp.df[c(221:240),] <- comp.df[101:120, ]
-  
   comp.df$meth.plot <- as.character(comp.df$method)
   comp.df$meth.plot[41:60] <- comp.df$meth.plot[101:120] <- 'Index'
   comp.df$meth.plot[161:180] <- comp.df$meth.plot[221:240] <- 'Index'
-  
   comp.df$plot <- as.character(comp.df$sample)
   comp.df$plot[41:60] <- comp.df$plot[101:120] <- 'Reference (Match)'
   comp.df$plot[161:180] <- comp.df$plot[221:240] <- 'Reference (Match)'
-  
   match.copy <- c(41:60, 101:120, 161:180, 221:240)
   comp.df <- rbind(comp.df, comp.df[match.copy,])
   comp.df$meth.plot[match.copy] <- 'Impute'
-  
+
+  # Label
   comp.df$plot <- factor(comp.df$plot, levels=c('Full Sample', 'Matched Sample',
                                                 'Reference (Match)'))
   comp.df$col <- ifelse(comp.df$type == 'Houses', 2, 1)
   comp.df$col[comp.df$plot=='Reference (Match)'] <- 3
   comp.df$meth.plot <- factor(comp.df$meth.plot, levels=c('Impute', 'Index'))
   
+  # Build Plot Object
   comp.plot <- ggplot(comp.df,
-                      aes(x=time, y=yield, color=as.factor(col), linetype=plot, size=plot)) +
+                      aes(x=time, y=yield, color=as.factor(col), 
+                          linetype=plot, size=plot)) +
     geom_line() +
     facet_grid(meth.plot~type) +
     scale_color_manual(values=c('darkorange', 'blue', 'gray80'), guide=FALSE) +
@@ -227,11 +249,20 @@ library(hexbin)
           axis.text=element_text(size=12),
           legend.text=element_text(size=16))
   
-    jpeg(file.path(getwd(),'papers', 'prmc',  'figures', 'compplot.jpg'), 
-         width = 1100, height = 900, quality=100)
-      comp.plot
-    dev.off()
+  # Export to JPG
+  jpeg(file.path(fig_path, 'compplot.jpg'), width = 1100, height = 900, quality=100)
+    comp.plot
+  dev.off()
   
+    
+    
+  
+  
+  
+  
+    
+    
+    
     hd.data <- full.dif.data$houses
     ud.data <- full.dif.data$units
     
