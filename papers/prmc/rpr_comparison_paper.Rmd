@@ -9,9 +9,8 @@ author:
 - Andy Krause^[Greenfield Advisors, Seattle, WA USA; akrause@greenfieldadvisors.com]
 - Gideon Aschwanden^[University of Melbourne, Melbourne, AUS; gideon.aschwanden@unimelb.edu.au]
 abstract: "Rent-price ratios are a critical tool in understanding housing markets. Index comparison approaches have remained the most popular estimation techique despite their widely accepted potential for bias. Two new methods -- hedonic imputation and direct matching -- have been developed and are aimed at improving the reliability of these estimates.  Using Melbourne (Australia) data we find that between-tenure compositional differences and geographic levels of aggregation explain most, but not all, divergences in estimates from the three methods. We suggest that the research question or purpose to which the ratio is put can help determine which method is most approriate."
- # keywords: "pandoc, r markdown, knitr"
-# date: "`r format(Sys.time(), '%B %d, %Y')`"
-# geometry: margin=1in
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+geometry: margin=1in
 # fontfamily: mathpazo
 fontsize: 11pt
 bibliography: prmc.bib
