@@ -69,7 +69,7 @@
     geom_path(data=subsGG, aes(x=long, y=lat, group=id), color='gray80') +
     geom_path(data=lgasGG, aes(x=long, y=lat, group=id), color='gray50') +
     stat_binhex(bins=100, aes(alpha=(..count..) ^ (1 / 3), fill=PropertyType)) +
-    scale_fill_manual(values=c('darkorange', 'navy'), guide=FALSE) +
+    scale_fill_manual(values=c('black', 'black'), guide=FALSE) +
     coord_cartesian(xlim=c(144.5, 145.6),
                     ylim=c(-38.2, -37.4)) +
     facet_grid(transType~PropertyType) +
