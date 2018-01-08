@@ -1,0 +1,34 @@
+---
+title:  'Deviations between Rent-Price Ratio Estimates:'
+subtitle: <h1><u>A Look at Three Methods<u></h1>
+
+output: 
+  pdf_document:
+    
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+geometry: margin=1in
+# fontfamily: mathpazo
+fontsize: 11pt
+bibliography: prmc.bib
+csl: style.csl
+
+---
+
+### Andy Krause (Contact Author)
+Principal Data Scientist\par
+Greenfield Advisors\par
+andy@greenfieldadvisors.com\par
+206-623-2935\par
+2101 4th Avenue, Suite 820\par
+Seattle, WA 98121 
+
+### Gideon Aschwanden 
+Lecturer\par
+University of Melbourne\par
+Department of Urban Analytics\par
+gideon.aschwanden@unimelb.edu.au\par
++61 3 8344 8553\par
+Level 4, Room 416\par
+Parkville, Australia 3010 
+
+ 
