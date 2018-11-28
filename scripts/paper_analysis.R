@@ -62,7 +62,11 @@
   map.data$PropertyType[map.data$PropertyType == 'Unit'] <- "Apartments"
   map.data$PropertyType[map.data$PropertyType == 'House'] <- "Houses"
   
- ## Build Plot Object  
+ ## Build Plot Object
+  
+  loc_cap <- paste0('This figure shows the location density of our 713,1119 study observations',
+                    'broken down by structure type and tenure type.\nDarker areas equal a higher',
+                    'density of observations.')
   
   loc.plot <- ggplot(data=map.data,
                      aes(x=Property_Longitude, y=Property_Latitude)) +
@@ -75,6 +79,7 @@
     facet_grid(transType~PropertyType) +
     theme_bw() +
     theme(legend.position='none',
+          plot.caption=element_text(size=18, hjust=.5),
           axis.title.x=element_blank(),
           axis.text.x=element_blank(),
           axis.ticks.x=element_blank(),
@@ -84,8 +89,9 @@
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
           strip.text.x = element_text(size = 30),
-          strip.text.y = element_text(size = 30))
-  
+          strip.text.y = element_text(size = 30))+
+    labs(caption = loc_cap)
+
  ## Save to JPG  
   
   jpeg(file.path(fig_path, 'melbMap.jpg'), 
@@ -119,12 +125,15 @@
     theme_bw() +
     theme(legend.title=element_blank(),
           legend.position='bottom',
+          plot.caption = element_text(size = 12, hjust=.5),
           legend.key.width=unit(2, "cm"),
           legend.key=element_rect(fill='white', color='white'),
           strip.text.x = element_text(size = 18),
           axis.text=element_text(size=12),
           axis.title=element_text(size=16,face="bold"),
-          legend.text=element_text(size=16))
+          legend.text=element_text(size=16))+
+    labs(caption = paste0('\nComparison of Sales (solid) versus Rental (dotted) price ',
+                          'indexes for houses and apartments in Melbourne, 2011 to 2016.'))
   
   # Export to JPR
   jpeg(file.path(fig_path, 'index1.jpg'), width = 1000, height = 400, quality=100)
@@ -151,11 +160,13 @@
   glob.all$type[glob.all$type == 'unit'] <- 'Apartments'
   glob.all$mt <- paste0(glob.all$method, glob.all$type)
   glob.all$sample <- "Full Sample"
+  glob.all$methodx <- paste0(glob.all$method, '   ')
+  
   
   # Build Plot Object
   all.glob <- ggplot(glob.all,
-                     aes(x=time, y=yield, group=method, color=type))+
-    geom_line(size=1.1, aes(linetype=method)) +
+                     aes(x=time, y=yield, group=methodx, color=type))+
+    geom_line(size=1.1, aes(linetype=methodx)) +
     facet_wrap(~type) +
     scale_size_manual(values=methSizes) +
     scale_colour_manual(values=c('darkorange', 'blue'), guide=FALSE) +
@@ -170,12 +181,15 @@
     theme_bw() +
     theme(legend.title=element_blank(),
           legend.position='bottom',
+          plot.caption = element_text(size=16, hjust=.5),
           legend.key.width=unit(2, "cm"),
           legend.key=element_rect(fill='white', color='white'),
           strip.text.x = element_text(size = 15),
           axis.title=element_text(size=16, face="bold"),
           axis.text=element_text(size=12),
-          legend.text=element_text(size=16))
+          legend.text=element_text(size=16)) +
+    labs(caption = paste0('\nComparison of rent-price ratio trends for all three ',
+                          'estimation methods across both struture types, 2011 to 2016'))
   
   # Export to JPG
   jpeg(file.path(fig_path, 'allglob.jpg'), width = 1000, height = 550, quality=100)
@@ -195,6 +209,7 @@
   ms.glob.all$sample <- 'Matched Sample'
   
   # Combine
+  glob.all$methodx <- NULL 
   comb.glob <- rbind(glob.all, ms.glob.all)
   comp.df <- comb.glob
   comp.df[c(161:180),] <- comp.df[41:60, ]
@@ -239,13 +254,20 @@
     theme_bw() +
     theme(legend.title=element_blank(),
           legend.position='bottom',
+          plot.caption = element_text(size = 16, hjust=.5),
           legend.key.width=unit(2.5, "cm"),
           legend.key=element_rect(fill='white', color='white'),
           strip.text.x = element_text(size = 15),
           strip.text.y = element_text(size = 15),
           axis.title=element_text(size=16, face="bold"),
           axis.text=element_text(size=12),
-          legend.text=element_text(size=16))
+          legend.text=element_text(size=16)) + 
+    labs(caption = paste0('Comparison of differences between the Match approach trend ',
+                          '(thin solid) and the Impute and Index trends with full sample ',
+                          '(thick solid)\nand matched (dashed) samples. The difference ',
+                          'between the thick solid and dashed lines show effects from ',
+                          'sample differences,\nbetween the dashed and thin solid from ',
+                          'estimation differences.'))
   
   # Export to JPG
   jpeg(file.path(fig_path, 'compplot.jpg'), width = 1000, height = 550, quality=100)
@@ -275,12 +297,12 @@
                                 levels=c('Metro', 'LGA', 'Suburb'))
     
     hd.data$comp.method <- factor(hd.data$comp.method,
-                                  levels=c('Index - Impute',
-                                           'Index - Match',
+                                  levels=c('Index - Match',
+                                           'Index - Impute',
                                            'Impute - Match'))
     ud.data$comp.method <- factor(ud.data$comp.method,
-                                  levels=c('Index - Impute',
-                                           'Index - Match',
+                                  levels=c('Index - Match',
+                                           'Index - Impute',
                                            'Impute - Match'))
     hd.data$sample <- 'Full Sample'
     ud.data$sample <- 'Full Sample'
@@ -314,8 +336,7 @@
     hd.ms.data$sample <- 'Matched Sample'
     ud.ms.data$sample <- 'Matched Sample'
     
-  ## Combine data  
-    
+ 
     house.dd <- rbind(hd.data, hd.ms.data)
     unit.dd <- rbind(ud.data, ud.ms.data)
     house.dd$CID <- paste0(house.dd$sample, substr(house.dd$geo.level,1,3),
@@ -324,14 +345,15 @@
     house.ddd <- data.frame(sample=c(rep('Full Sample', 180), rep('Matched Sample', 180)),
                             time=rep(c(1,10:19,2,20,3:9), 18),
                             meth.dif=house.calc,
-                            geo.level=rep(c(rep('LGA', 60), rep('Metro', 60),
-                                            rep('Suburb', 60)), 2),
+                            geo.level=rep(c(rep('LGA   ', 60), rep('Metro   ', 60),
+                                            rep('Suburb   ', 60)), 2),
                             comp.method=rep(c(rep("Impute - Match", 20),
                                               rep('Index - Impute', 20),
                                               rep('Index - Match', 20)), 3))
-    house.ddd$geo.level <- factor(house.ddd$geo.level, levels=c('Metro', 'LGA', 'Suburb'))
+    house.ddd$geo.level <- factor(house.ddd$geo.level, levels=c('Metro   ', 'LGA   ', 
+                                                                'Suburb   '))
     house.ddd$comp.method <- factor(house.ddd$comp.method,
-                                    levels=c('Index - Impute', 'Index - Match',
+                                    levels=c('Index - Match', 'Index - Impute',
                                              'Impute - Match'))
     
     unit.dd$CID <- paste0(unit.dd$sample, substr(unit.dd$geo.level,1,3),
@@ -340,14 +362,15 @@
     unit.ddd <- data.frame(sample=c(rep('Full Sample', 180), rep('Matched Sample', 180)),
                            time=rep(c(1,10:19,2,20,3:9), 18),
                            meth.dif=unit.calc,
-                           geo.level=rep(c(rep('LGA', 60), rep('Metro', 60),
-                                           rep('Suburb', 60)), 2),
+                           geo.level=rep(c(rep('LGA   ', 60), rep('Metro   ', 60),
+                                           rep('Suburb   ', 60)), 2),
                            comp.method=rep(c(rep("Impute - Match", 20),
                                              rep('Index - Impute', 20),
                                              rep('Index - Match', 20)), 3))
-    unit.ddd$geo.level <- factor(unit.ddd$geo.level, levels=c('Metro', 'LGA', 'Suburb'))
+    unit.ddd$geo.level <- factor(unit.ddd$geo.level, levels=c('Metro   ', 'LGA   ',
+                                                              'Suburb   '))
     unit.ddd$comp.method <- factor(unit.ddd$comp.method,
-                                   levels=c('Index - Impute', 'Index - Match',
+                                   levels=c('Index - Match', 'Index - Impute',
                                             'Impute - Match'))
   
   ## Build plot object  
@@ -371,12 +394,18 @@
       theme(legend.title=element_blank(),
             legend.position='bottom',
             legend.key.width=unit(2.5, "cm"),
+            plot.caption = element_text(size =16, hjust=.5),
             legend.key=element_rect(fill='white', color='white'),
             strip.text.x = element_text(size = 16),
             strip.text.y = element_text(size = 16),
             axis.title=element_text(size=16, face="bold"),
             axis.text=element_text(size=12),
-            legend.text=element_text(size=16))
+            legend.text=element_text(size=16)) + 
+     labs(caption = paste0('House Rent-Price Ratio differences between methods ',
+                           'brokend down by geographic area and by sample type (Full vs ',
+                           'Matched.\nColumn-wise comparisons show sample effect, row-wise ',
+                           'comparisons highlight methodological differences.  Within each ',
+                           'panel,\ndifferences are due to the geographical scale of analysis.'))
     
   # Export to JPG
    jpeg(file.path(fig_path, 'hdplot.jpg'), width = 1000, height = 500, quality=100)
@@ -384,7 +413,8 @@
    dev.off()
    
   ## Create Plot 
-  ud.plot <- ggplot(unit.ddd,
+ 
+   ud.plot <- ggplot(unit.ddd,
                         aes(x=time, y=meth.dif, group=geo.level,
                             colour=geo.level, size=geo.level)) +
       #geom_line() +
@@ -402,13 +432,19 @@
       theme_bw() +
       theme(legend.title=element_blank(),
             legend.position='bottom',
+            plot.caption = element_text(size =16, hjust=.5),
             legend.key.width=unit(2.5, "cm"),
             legend.key=element_rect(fill='white', color='white'),
             strip.text.x = element_text(size = 16),
             strip.text.y = element_text(size = 16),
             axis.title=element_text(size=16, face="bold"),
             axis.text=element_text(size=12),
-            legend.text=element_text(size=16))
+            legend.text=element_text(size=16)) + 
+     labs(caption = paste0('Apartment Rent-Price Ratio differences between methods ',
+                           'brokend down by geographic area and by sample type (Full vs ',
+                           'Matched.\nColumn-wise comparisons show sample effect, row-wise ',
+                           'comparisons highlight methodological differences.  Within each ',
+                           'panel,\ndifferences are due to the geographical scale of analysis.'))
     
       
  # Export to JPG

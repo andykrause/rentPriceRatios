@@ -1,0 +1,15 @@
+---
+title: "Author Bios"
+author: ""
+date: "11/17/2018"
+output: pdf_document
+---
+
+### Andy Krause
+
+Dr. Andy Krause is a Senior Applied Scientist at Zillow where he works on developing and improving machine learning algorithms to analyze and predict real estate markets.  Prior to Zillow, Andy has worked in private consulting developing Automated Valuation Models for using litigation and commercial contexts as well as holding a post as a lecturer in Property at the University of Melbourne.  Dr. Krause's research focuses on mass valuation modeling, house price indexes and rental markets.  
+
+
+### Gideon Aschwanden
+
+Dr. Gideon Aschwanden is Lecturer in Urban Analytics with a focus on data, learning algorithms and neural networks to evaluate the urban fabric with a focus on health, transportation and economic opportunities. He teaches graduate subjects in Urban Design and Property and leads research projects in the realm of open data, policy and transportation. Before the University of Melbourne, he taught and researched at Princeton University on digital fabrication methods and building systems as part of the CHAOS lab (cooling and heating architecturally optimized systems) in the Andlinger Centre for Energy and the Environment. He has an MSc in Architecture and a doctoral degree in Science from the ETH Zurich. To deepen his knowledge, he worked as a researcher at the Future Cities Laboratory in Singapore and has professional experience in Switzerland, Singapore and the United States.
